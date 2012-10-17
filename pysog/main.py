@@ -1,4 +1,4 @@
-from Room import Room
+from world.room import Room
 
 ########################
 # The game loop

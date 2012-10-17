@@ -6,7 +6,7 @@ setup(
 	packages = find_packages(),
 	entry_points = {
 		'setuptools.installation': [
-			'eggsecutable = pySOG.main:main'
+			'eggsecutable = pysog.main:main'
 		]
 	}
 )
