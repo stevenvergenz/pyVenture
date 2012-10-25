@@ -12,9 +12,9 @@ class Room:
 	
 	
 	# Instance members
-	def __init__(self, name, description = ''):
+	def __init__(self, name, entranceDescription = ''):
 	
-		self.description = description
+		self.entranceDescription = entranceDescription
 		self.id = Room.getID()
 		self.name = name
 		self.passages = []
