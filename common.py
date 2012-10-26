@@ -1,3 +1,28 @@
+class World:
+
+	def __init__(self):
+
+		self.areas = {}
+		self.player = None
+
+		
+	def addArea(self, area):
+	
+		if not isinstance(area, Area):
+			raise TypeError('Cannot add a non-area to the area list')
+			
+		area.id = _generateId(area)
+		self.areas[area.id] = area
+		
+		
+	def _generateId(self, area):
+
+		i = 1
+		while area.name + ' ' + str(i) in self.areas.keys():
+			i += 1
+		return area.name + ' ' + str(i)
+			
+	
 
 class Area:
 
