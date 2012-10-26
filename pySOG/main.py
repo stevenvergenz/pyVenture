@@ -1,4 +1,4 @@
-from Room import Room
+from features import Room
 
 ########################
 # The game loop
