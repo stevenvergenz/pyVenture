@@ -1,3 +1,3 @@
-from main import main
+from pyVenture.main import main
 
 main()
