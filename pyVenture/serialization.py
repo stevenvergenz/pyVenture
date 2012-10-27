@@ -25,12 +25,14 @@ def serializeArea(area):
 		return dump
 		
 	dump['name'] = area.name
-	dump['entranceDescription'] = area.entranceDescription
+	dump['entranceText'] = area.entranceText
 	
 	dump['features'] = []
 	for feature in area.features:
 		dump['features'].append( serializeFeature(feature) )
 	
+	return dump
+
 	
 def serializeFeature(feature):
 	
@@ -41,16 +43,40 @@ def serializeFeature(feature):
 	dump['name'] = feature.name
 	dump['description'] = feature.description
 	
-	if isinstance(feature, Passage):
-		dump['type'] = 'passage'
-		dump['destination'] = feature.destination.id
-	
-	dump['actions'] = {}
+	dump['actions'] = []
 	for action in feature.actions:
-		
+		dump['actions'].append( serializeAction( action ) )
+
+	return dump
 	
 	
+def serializeAction(action):
+
+	dump = {}
+	if action == None:
+		return dump
+
+	dump['type'] = action.type
+	dump['description'] = action.description
+	dump['actionText'] = action.actionText
+
+	if isinstance(action, common.PlayerMoveAction):
+		dump['destination'] = action.destination.id
+
+	return dump
+
+
 def serializePlayer(player):
 
-	pass
+	dump = {}
+	if player == None:
+		return dump
+
+	dump['name'] = player.name
+	dump['currentArea'] = player.currentArea.id
+	dump['inventory'] = []
+	for i in player.inventory:
+		dump['items'].append(i)
+
+	return dump
 	

@@ -11,7 +11,7 @@ class World:
 		if not isinstance(area, Area):
 			raise TypeError('Cannot add a non-area to the area list')
 			
-		area.id = _generateId(area)
+		area.id = self._generateId(area)
 		self.areas[area.id] = area
 		
 		
@@ -26,10 +26,10 @@ class World:
 
 class Area:
 
-	def __init__(self, name, entranceDescription):
+	def __init__(self, name, entranceText):
 	
 		self.name = name
-		self.entranceDescription = entranceDescription
+		self.entranceText = entranceText
 		self.features = []
 		
 # end class Area
@@ -77,7 +77,7 @@ class PlayerMoveAction(Action):
 	def execute(self, actor):
 
 		Action.execute(self, actor)
-		actor.moveTo(destination)
+		actor.currentArea = self.destination
 
 # end class PlayerMoveAction
 
@@ -90,9 +90,4 @@ class Player:
 		self.inventory = []
 		self.currentArea = None
 
-	def moveTo(self, destination):
-	
-		self.currentArea = destination
-		print destination.entranceDescription
-		
 # end class Player
