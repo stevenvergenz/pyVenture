@@ -1,3 +1,5 @@
+from events import TextEvent
+
 class World:
 
 	def __init__(self):
@@ -12,6 +14,7 @@ class World:
 			raise TypeError('Cannot add a non-area to the area list')
 			
 		area.id = self._generateId(area)
+		area.parentWorld = self
 		self.areas[area.id] = area
 		
 		
@@ -29,6 +32,7 @@ class Area:
 	def __init__(self, name, entranceText):
 	
 		self.name = name
+		self.parentWorld = None
 		self.entranceText = entranceText
 		self.features = []
 		
@@ -41,6 +45,7 @@ class Feature:
 	
 		self.name = name
 		self.description = description
+		self.parentArea = None
 		self.actions = []
 		
 # end class Feature
@@ -48,38 +53,20 @@ class Feature:
 
 class Action:
 
-	def __init__(self, description, actionText, parentFeature):
+	def __init__(self, description, actionText):
 	
-		self.type = 'Action'
 		self.description = description
-		self.actionText = actionText
+		self.parentFeature = None
+		self.events = []
+		
+		self.events.append( TextEvent(actionText) )
 
-		if isinstance(parentFeature, Feature):
-			self.parentFeature = parentFeature
-		else:
-			raise TypeError('Action parent must be a Feature')
+	def trigger(self, actor):
 
-	def execute(self, actor):
-
-		print self.actionText
+		for consequent in self.events:
+			consequent(actor, self)
 	
 # end class Action
-
-
-class PlayerMoveAction(Action):
-
-	def __init__(self, description, actionText, parentFeature, destination):
-
-		Action.__init__(self, description, actionText, parentFeature)
-		self.type = 'PlayerMoveAction'
-		self.destination = destination
-
-	def execute(self, actor):
-
-		Action.execute(self, actor)
-		actor.currentArea = self.destination
-
-# end class PlayerMoveAction
 
 
 class Player:

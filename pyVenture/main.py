@@ -1,4 +1,6 @@
-from common import World, Player, Area, Feature, PlayerMoveAction
+from common import World, Player, Area, Feature, Action
+from events import PlayerMoveEvent
+
 import serialization
 
 def buildWorld():
@@ -27,7 +29,10 @@ def buildWorld():
 	for id, connections in passages.items():
 		for passage in connections:
 			feature = Feature(passage[0], passage[1])
-			action = PlayerMoveAction('Enter '+passage[0], 'You traverse the passage.', feature, world.areas[passage[2]])
+			feature.parentArea = world.areas[passage[2]]
+			action = Action('Enter '+passage[0], 'You traverse the passage.')
+			action.events.append( PlayerMoveEvent( world.areas[passage[2]] ) )
+			action.parentFeature = feature
 			feature.actions.append(action)
 			world.areas[id].features.append(feature)
 	
@@ -61,7 +66,7 @@ def main():
 		if choice == 'quit':
 			break
 		else:
-			actionlist[int(choice)-1].execute(player)
+			actionlist[int(choice)-1].trigger(player)
 
 
 	print serialization.serializeWorld(world)
