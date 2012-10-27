@@ -46,33 +46,40 @@ class Feature:
 # end class Feature
 
 
-class Passage(Feature):
-
-	def __init__(self, name, description, destination):
-	
-		Feature.__init__(self, name, description)
-		self.destination = destination
-		
-		# add the 'go through' action
-		def travelThrough(actor):
-			actor.moveTo(destination)
-			
-		travel = Action('Go through '+name, self, travelThrough)
-		self.actions.append(travel)
-
-
 class Action:
 
-	def __init__(self, description, receiver, handler):
+	def __init__(self, description, actionText, parentFeature):
 	
+		self.type = 'Action'
 		self.description = description
-		if isinstance(receiver, Feature):
-			self.receiver = receiver
+		self.actionText = actionText
+
+		if isinstance(parentFeature, Feature):
+			self.parentFeature = parentFeature
 		else:
-			raise TypeError('Action receiver must be a Feature')
-		self.execute = handler
+			raise TypeError('Action parent must be a Feature')
+
+	def execute(self, actor):
+
+		print self.actionText
 	
 # end class Action
+
+
+class PlayerMoveAction(Action):
+
+	def __init__(self, description, actionText, parentFeature, destination):
+
+		Action.__init__(self, description, actionText, parentFeature)
+		self.type = 'PlayerMoveAction'
+		self.destination = destination
+
+	def execute(self, actor):
+
+		Action.execute(self, actor)
+		actor.moveTo(destination)
+
+# end class PlayerMoveAction
 
 
 class Player:
@@ -81,7 +88,8 @@ class Player:
 	
 		self.name = name
 		self.inventory = []
-		
+		self.currentArea = None
+
 	def moveTo(self, destination):
 	
 		self.currentArea = destination
