@@ -1,6 +1,7 @@
 import abc				
-				
-class Event:
+from serial import Serial
+	
+class Event(Serial):
 	__metaclass__ = abc.ABCMeta
 	
 	def __new__(cls, *args, **kwargs):
@@ -13,6 +14,12 @@ class Event:
 		"""Called when the parent action is triggered."""
 		pass
 
+		
+	@staticmethod
+	@abc.abstractmethod
+	def deserialize(dump, world):
+		pass
+		
 	@abc.abstractmethod
 	def serialize(self):
 		"""Serializes the event into a dictionary for file dumping."""

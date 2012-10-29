@@ -4,38 +4,8 @@ import json
 
 def buildWorld():
 
-	rooms = [('Birth Springs', 'You awake in a damp dark stone room.'),
-		('Courtyard', 'You arrive in a brightly lit dirt practice yard with several dummies set up.'),
-		('Library', 'You arrive in a quiet musty-smelling room with rows and rows of bookshelves.'),
-		('Armory', 'You arrive in a cramped room full of weapon and armor racks.')]
-
-	passages = {'Birth Springs 1': [('dark tunnel', 'A long dark tunnel to the south with a light at the end', 'Courtyard 1')],
-		'Courtyard 1': [('western stairway', 'A winding staircase to the west leading to a stone tower', 'Library 1'),
-			('southern door', 'A sturdy-looking wooden door to the south', 'Armory 1')],
-		'Library 1': [('eastern door', 'Wooden double-doors to the east', 'Courtyard 1')],
-		'Armory 1': [('northern door', 'A sturdy wooden door to the north', 'Courtyard 1')]}
-
-	world = World()
-	world.player = Player('Hero')
-
-	# initialize rooms
-	for name, entranceText in rooms:
-		room = Area(name, entranceText)
-		world.addArea(room)
-
-
-	# initialize passages
-	for id, connections in passages.items():
-		for passage in connections:
-			feature = Feature(passage[0], passage[1])
-			feature.parentArea = world.areas[passage[2]]
-			action = Action('Enter '+passage[0], 'You traverse the passage.')
-			action.events.append( PlayerMoveEvent( world.areas[passage[2]] ) )
-			action.parentFeature = feature
-			feature.actions.append(action)
-			world.areas[id].features.append(feature)
-	
-	world.player.currentArea = world.areas['Birth Springs 1']
+	dump = json.loads('{"player": {"inventory": [], "name": "Hero", "currentArea": "Courtyard 1"}, "areas": {"Library 1": {"entranceText": "You arrive in a quiet musty-smelling room with rows and rows of bookshelves.", "name": "Library", "features": [{"name": "eastern door", "actions": [{"description": "Enter eastern door", "events": [{"text": "You traverse the passage.", "type": "TextEvent"}, {"destination": "Courtyard 1", "type": "PlayerMoveEvent"}]}], "description": "Wooden double-doors to the east"}]}, "Courtyard 1": {"entranceText": "You arrive in a brightly lit dirt practice yard with several dummies set up.", "name": "Courtyard", "features": [{"name": "western stairway", "actions": [{"description": "Enter western stairway", "events": [{"text": "You traverse the passage.", "type": "TextEvent"}, {"destination": "Library 1", "type": "PlayerMoveEvent"}]}], "description": "A winding staircase to the west leading to a stone tower"}, {"name": "southern door", "actions": [{"description": "Enter southern door", "events": [{"text": "You traverse thepassage.", "type": "TextEvent"}, {"destination": "Armory 1", "type": "PlayerMoveEvent"}]}], "description": "A sturdy-looking wooden door to the south"}]}, "Birth Springs 1": {"entranceText": "You awake in a damp dark stone room.", "name": "Birth Springs", "features": [{"name": "dark tunnel", "actions": [{"description": "Enter dark tunnel", "events": [{"text": "You traverse the passage.", "type": "TextEvent"}, {"destination": "Courtyard 1", "type": "PlayerMoveEvent"}]}], "description": "A long dark tunnel to the south with a light at the end"}]}, "Armory 1": {"entranceText": "You arrive in a cramped room full of weapon and armor racks.", "name": "Armory", "features": [{"name": "northern door", "actions": [{"description": "Enter northern door", "events": [{"text": "You traverse the passage.", "type": "TextEvent"}, {"destination": "Courtyard 1", "type": "PlayerMoveEvent"}]}], "description": "A sturdy wooden door to the north"}]}}}')
+	world = World.deserialize(dump)
 	return world
 
 
