@@ -1,6 +1,7 @@
-from events import TextEvent
+import events
+from serial import Serial
 
-class World:
+class World(Serial):
 
 	def __init__(self):
 
@@ -22,7 +23,7 @@ class World:
 		while area.name + ' ' + str(i) in self.areas.keys():
 			i += 1
 		return area.name + ' ' + str(i)
-			
+		
 	def serialize(self):
 	
 		dump = {}
@@ -32,12 +33,12 @@ class World:
 			
 		dump['player'] = self.player.serialize()
 		
-		return dump
+		return dump		
 	
 # end class World
 
 
-class Area:
+class Area(Serial):
 
 	def __init__(self, name, entranceText):
 	
@@ -60,7 +61,7 @@ class Area:
 # end class Area
 
 
-class Feature:
+class Feature(Serial):
 
 	def __init__(self, name, description):
 	
@@ -83,15 +84,15 @@ class Feature:
 # end class Feature
 
 
-class Action:
+class Action(Serial):
 
-	def __init__(self, description, actionText):
-	
+	def __init__(self, description, actionText = None):
 		self.description = description
 		self.parentFeature = None
 		self.events = []
-		self.events.append( TextEvent(actionText) )
-
+		if actionText != None:
+			self.events.append( events.TextEvent(actionText) )
+		
 	def trigger(self, actor):
 
 		for consequent in self.events:
@@ -110,10 +111,9 @@ class Action:
 # end class Action
 
 
-class Player:
+class Player(Serial):
 
 	def __init__(self, name):
-	
 		self.name = name
 		self.inventory = []
 		self.currentArea = None

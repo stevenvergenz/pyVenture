@@ -1,14 +1,21 @@
-
+import abc				
+				
 class Event:
-
-	def __init__(self):
-		self.type = 'Event'
-		raise NotImplementedError('Cannot use Event class directly. Use a subclass instead')
-
+	__metaclass__ = abc.ABCMeta
+	
+	def __new__(cls, *args, **kwargs):
+		instance = object.__new__(cls)
+		instance.type = instance.__class__.__name__
+		return instance
+	
+	@abc.abstractmethod
 	def __call__(self, actor, action):
-		raise NotImplementedError('Cannot use Event class directly. Use a subclass instead')
+		"""Called when the parent action is triggered."""
+		pass
 
+	@abc.abstractmethod
 	def serialize(self):
+		"""Serializes the event into a dictionary for file dumping."""
 		return {}
 		
 # end class Event
@@ -17,8 +24,6 @@ class Event:
 class TextEvent(Event):
 
 	def __init__(self, text):
-
-		self.type = 'TextEvent'
 		self.text = text
 
 	def __call__(self, actor, action):
@@ -33,7 +38,6 @@ class TextEvent(Event):
 class PlayerMoveEvent(Event):
 
 	def __init__(self, destination):
-		self.type = 'PlayerMoveEvent'
 		self.destination = destination
 
 	def __call__(self, actor, action):
