@@ -1,7 +1,6 @@
 from common import World, Player, Area, Feature, Action
 from events import PlayerMoveEvent
-
-import serialization
+import json
 
 def buildWorld():
 
@@ -69,5 +68,5 @@ def main():
 			actionlist[int(choice)-1].trigger(player)
 
 
-	print serialization.serializeWorld(world)
-
+	print json.dumps( world.serialize() )
+	raw_input('Press Enter to quit...')
