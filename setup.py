@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
 	name = 'pyVenture',
 	version = '0.1',
-	packages = find_packages(),
+	packages = ['pyVenture'],
 	entry_points = {
 		'setuptools.installation': [
 			'eggsecutable = pyVenture.main:main'
@@ -11,4 +11,13 @@ setup(
 	}
 )
 
-
+setup(
+	name = 'pyVentureTools',
+	version = '0.1',
+	packages = ['pyVentureTools'],
+	entry_points = {
+		'setuptools.instlalation': [
+			'eggsecutable = pyVentureTools.main:main'
+		]
+	}
+)
