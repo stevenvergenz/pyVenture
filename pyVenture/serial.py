@@ -20,6 +20,7 @@ class Serial:
 			obj = common.World()
 			for id, area in dump['areas'].items():
 				obj.areas[id] = common.Area.deserialize(area, obj)
+				obj.areas[id].id = id
 				obj.areas[id].parentWorld = obj
 				
 			obj.player = common.Player.deserialize( dump['player'], obj )
@@ -44,13 +45,8 @@ class Serial:
 			for event in dump['events']:
 				obj.events.append( events.Event.deserialize(event, world) )
 				
-		elif cls == events.Event:
-		
-			for subclass in events.Event.__subclasses__():
-				if subclass.__class__.__name__ == dump['type']:
-					return subclass.deserialize(dump, world)
 		else:
-			print cls.__name__
+			print 'Problem class:', cls.__name__
 			
 		return obj
 		
