@@ -40,3 +40,7 @@ def main():
 
 	print json.dumps( world.serialize() )
 	raw_input('Press Enter to quit...')
+
+
+if __name__ == '__main__':
+	main()
