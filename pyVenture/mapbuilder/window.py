@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'window.ui'
+# Form implementation generated from reading ui file 'pyVenture/mapbuilder/window.ui'
 #
-# Created: Wed Oct 31 12:56:17 2012
+# Created: Wed Oct 31 17:21:04 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -32,8 +32,22 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
         self.areaMap = QtGui.QWidget()
-        self.areaMap.setGeometry(QtCore.QRect(0, 0, 368, 541))
+        self.areaMap.setGeometry(QtCore.QRect(0, 0, 194, 541))
         self.areaMap.setObjectName(_fromUtf8("areaMap"))
+        self.label = QtGui.QLabel(self.areaMap)
+        self.label.setGeometry(QtCore.QRect(70, 210, 71, 41))
+        self.label.setFrameShape(QtGui.QFrame.Box)
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+        self.label.setWordWrap(True)
+        self.label.setMargin(0)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.label_2 = QtGui.QLabel(self.areaMap)
+        self.label_2.setGeometry(QtCore.QRect(90, 110, 71, 41))
+        self.label_2.setFrameShape(QtGui.QFrame.Box)
+        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_2.setWordWrap(True)
+        self.label_2.setMargin(0)
+        self.label_2.setObjectName(_fromUtf8("label_2"))
         self.scrollArea.setWidget(self.areaMap)
         self.propertySplitter = QtGui.QSplitter(self.mainSplitter)
         self.propertySplitter.setOrientation(QtCore.Qt.Vertical)
@@ -44,16 +58,23 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.hierarchyTree.sizePolicy().hasHeightForWidth())
         self.hierarchyTree.setSizePolicy(sizePolicy)
+        self.hierarchyTree.setAlternatingRowColors(True)
+        self.hierarchyTree.setAnimated(True)
         self.hierarchyTree.setColumnCount(2)
         self.hierarchyTree.setObjectName(_fromUtf8("hierarchyTree"))
         item_0 = QtGui.QTreeWidgetItem(self.hierarchyTree)
-        self.hierarchyTree.header().setDefaultSectionSize(150)
+        self.hierarchyTree.header().setDefaultSectionSize(200)
         self.propertyTable = QtGui.QTableWidget(self.propertySplitter)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.propertyTable.sizePolicy().hasHeightForWidth())
         self.propertyTable.setSizePolicy(sizePolicy)
+        self.propertyTable.setAlternatingRowColors(True)
+        self.propertyTable.setHorizontalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+        self.propertyTable.setGridStyle(QtCore.Qt.DotLine)
+        self.propertyTable.setWordWrap(False)
+        self.propertyTable.setCornerButtonEnabled(False)
         self.propertyTable.setObjectName(_fromUtf8("propertyTable"))
         self.propertyTable.setColumnCount(2)
         self.propertyTable.setRowCount(0)
@@ -61,8 +82,9 @@ class Ui_MainWindow(object):
         self.propertyTable.setHorizontalHeaderItem(0, item)
         item = QtGui.QTableWidgetItem()
         self.propertyTable.setHorizontalHeaderItem(1, item)
-        self.propertyTable.horizontalHeader().setDefaultSectionSize(150)
+        self.propertyTable.horizontalHeader().setDefaultSectionSize(120)
         self.propertyTable.horizontalHeader().setStretchLastSection(True)
+        self.propertyTable.verticalHeader().setVisible(False)
         self.verticalLayout_2.addWidget(self.mainSplitter)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -101,6 +123,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("MainWindow", "Armory 1", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Birth Springs 1", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Name", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
         __sortingEnabled = self.hierarchyTree.isSortingEnabled()
