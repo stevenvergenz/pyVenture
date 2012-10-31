@@ -92,7 +92,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		elif treeItem.text(1) == 'Feature':
 			
 			parentTreeArea = treeItem.parent()
-			parentArea = self.world.areas[ treeItem.parent().text(0).__str__() ]
+			parentArea = self.world.areas[ parentTreeArea.text(0).__str__() ]
 			item = parentArea.features[ parentTreeArea.indexOfChild(treeItem) ]
 
 			self.propertyTable.setRowCount(2)
@@ -102,4 +102,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 			self.propertyTable.setItem( 1,0, QtGui.QTableWidgetItem('description') )
 			self.propertyTable.setItem( 1,1, QtGui.QTableWidgetItem( item.description ) )
+
+		elif treeItem.text(1) == 'Action':
+
+			parentTreeFeature = treeItem.parent()
+			parentTreeArea = parentTreeFeature.parent()
+			parentArea = self.world.areas[ parentTreeArea.text(0).__str__() ]
+			parentFeature = parentArea.features[ parentTreeArea.indexOfChild(parentTreeFeature) ]
+			item = parentFeature.actions[ parentTreeFeature.indexOfChild(treeItem) ]
+
+			self.propertyTable.setRowCount(1)
+
+			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('description') )
+			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( item.description ) )
 
