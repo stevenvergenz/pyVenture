@@ -16,7 +16,7 @@ setup(
 	version = '0.1',
 	packages = ['pyVentureTools'],
 	entry_points = {
-		'setuptools.instlalation': [
+		'setuptools.installation': [
 			'eggsecutable = pyVentureTools.main:main'
 		]
 	}
