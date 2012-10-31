@@ -1,5 +1,5 @@
-from common import World, Player, Area, Feature, Action
-from events import PlayerMoveEvent
+from common.types import World, Player, Area, Feature, Action
+from common.events import PlayerMoveEvent
 import json
 
 def buildWorld():

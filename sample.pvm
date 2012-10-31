@@ -1,0 +1,128 @@
+{
+    "areas": {
+        "Armory 1": {
+            "entranceText": "You arrive in a cramped room full of weapon and armor racks.", 
+            "features": [
+                {
+                    "actions": [
+                        {
+                            "description": "Enter northern door", 
+                            "events": [
+                                {
+                                    "text": "You traverse the passage.", 
+                                    "type": "TextEvent"
+                                }, 
+                                {
+                                    "destination": "Courtyard 1", 
+                                    "type": "PlayerMoveEvent"
+                                }
+                            ]
+                        }
+                    ], 
+                    "description": "A sturdy wooden door to the north", 
+                    "name": "northern door"
+                }
+            ], 
+            "name": "Armory"
+        }, 
+        "Birth Springs 1": {
+            "entranceText": "You awake in a damp dark stone room.", 
+            "features": [
+                {
+                    "actions": [
+                        {
+                            "description": "Enter dark tunnel", 
+                            "events": [
+                                {
+                                    "text": "You traverse the passage.", 
+                                    "type": "TextEvent"
+                                }, 
+                                {
+                                    "destination": "Courtyard 1", 
+                                    "type": "PlayerMoveEvent"
+                                }
+                            ]
+                        }
+                    ], 
+                    "description": "A long dark tunnel to the south with a light at the end", 
+                    "name": "dark tunnel"
+                }
+            ], 
+            "name": "Birth Springs"
+        }, 
+        "Courtyard 1": {
+            "entranceText": "You arrive in a brightly lit dirt practice yard with several dummies set up.", 
+            "features": [
+                {
+                    "actions": [
+                        {
+                            "description": "Enter western stairway", 
+                            "events": [
+                                {
+                                    "text": "You traverse the passage.", 
+                                    "type": "TextEvent"
+                                }, 
+                                {
+                                    "destination": "Library 1", 
+                                    "type": "PlayerMoveEvent"
+                                }
+                            ]
+                        }
+                    ], 
+                    "description": "A winding staircase to the west leading to a stone tower", 
+                    "name": "western stairway"
+                }, 
+                {
+                    "actions": [
+                        {
+                            "description": "Enter southern door", 
+                            "events": [
+                                {
+                                    "text": "You traverse thepassage.", 
+                                    "type": "TextEvent"
+                                }, 
+                                {
+                                    "destination": "Armory 1", 
+                                    "type": "PlayerMoveEvent"
+                                }
+                            ]
+                        }
+                    ], 
+                    "description": "A sturdy-looking wooden door to the south", 
+                    "name": "southern door"
+                }
+            ], 
+            "name": "Courtyard"
+        }, 
+        "Library 1": {
+            "entranceText": "You arrive in a quiet musty-smelling room with rows and rows of bookshelves.", 
+            "features": [
+                {
+                    "actions": [
+                        {
+                            "description": "Enter eastern door", 
+                            "events": [
+                                {
+                                    "text": "You traverse the passage.", 
+                                    "type": "TextEvent"
+                                }, 
+                                {
+                                    "destination": "Courtyard 1", 
+                                    "type": "PlayerMoveEvent"
+                                }
+                            ]
+                        }
+                    ], 
+                    "description": "Wooden double-doors to the east", 
+                    "name": "eastern door"
+                }
+            ], 
+            "name": "Library"
+        }
+    }, 
+    "player": {
+        "currentArea": "Courtyard 1", 
+        "inventory": [], 
+        "name": "Hero"
+    }
+}

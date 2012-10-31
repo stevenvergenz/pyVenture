@@ -1,5 +1,5 @@
 import abc
-import common
+import types
 import events
 
 class Serial:
@@ -10,38 +10,38 @@ class Serial:
 	
 		obj = None
 		
-		if cls == common.Player:
+		if cls == types.Player:
 		
-			obj = common.Player(dump['name'])
+			obj = types.Player(dump['name'])
 			obj.currentArea = world.areas[dump['currentArea']]
 			
-		elif cls == common.World:
+		elif cls == types.World:
 		
-			obj = common.World()
+			obj = types.World()
 			for id, area in dump['areas'].items():
-				obj.areas[id] = common.Area.deserialize(area, obj)
+				obj.areas[id] = types.Area.deserialize(area, obj)
 				obj.areas[id].id = id
 				obj.areas[id].parentWorld = obj
 				
-			obj.player = common.Player.deserialize( dump['player'], obj )
+			obj.player = types.Player.deserialize( dump['player'], obj )
 		
-		elif cls == common.Area:
+		elif cls == types.Area:
 		
-			obj = common.Area(dump['name'], dump['entranceText'])
+			obj = types.Area(dump['name'], dump['entranceText'])
 			for feature in dump['features']:
-				obj.features.append( common.Feature.deserialize(feature, world) )
+				obj.features.append( types.Feature.deserialize(feature, world) )
 				obj.features[-1].parentArea = obj
 				
-		elif cls == common.Feature:
+		elif cls == types.Feature:
 		
-			obj = common.Feature(dump['name'], dump['description'])
+			obj = types.Feature(dump['name'], dump['description'])
 			for action in dump['actions']:
-				obj.actions.append( common.Action.deserialize(action, world) )
+				obj.actions.append( types.Action.deserialize(action, world) )
 				obj.actions[-1].parentFeature = obj
 				
-		elif cls == common.Action:
+		elif cls == types.Action:
 		
-			obj = common.Action(dump['description'])
+			obj = types.Action(dump['description'])
 			for event in dump['events']:
 				obj.events.append( events.Event.deserialize(event, world) )
 				
