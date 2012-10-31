@@ -57,13 +57,14 @@ class Event(Serial):
 class TextEvent(Event):
 
 	def __init__(self, text):
-		self.text = text
+		self.properties = {}
+		self.properties['text'] = text
 
 	def __call__(self, actor, action):
-		print self.text
+		print self.properties['text']
 
 	def serialize(self):
-		return {'type': self.type, 'text': self.text }
+		return {'type': self.type, 'text': self.properties['text'] }
 		
 	@staticmethod
 	def deserialize(dump, world):
@@ -75,13 +76,14 @@ class TextEvent(Event):
 class PlayerMoveEvent(Event):
 
 	def __init__(self, destination):
-		self.destination = destination
+		self.properties = {}
+		self.properties['destination'] = destination
 
 	def __call__(self, actor, action):
-		actor.currentArea = action.parentFeature.parentArea.parentWorld.areas[ self.destination ]
+		actor.currentArea = action.parentFeature.parentArea.parentWorld.areas[ self.properties['destination'] ]
 		
 	def serialize(self):
-		return {'type': self.type, 'destination': self.destination}
+		return {'type': self.type, 'destination': self.properties['destination']}
 	
 	@staticmethod
 	def deserialize(dump, world):
