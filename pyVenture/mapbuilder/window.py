@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'pyVenture/mapbuilder/window.ui'
+# Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Wed Oct 31 17:21:04 2012
+# Created: Wed Oct 31 21:51:02 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -62,7 +62,6 @@ class Ui_MainWindow(object):
         self.hierarchyTree.setAnimated(True)
         self.hierarchyTree.setColumnCount(2)
         self.hierarchyTree.setObjectName(_fromUtf8("hierarchyTree"))
-        item_0 = QtGui.QTreeWidgetItem(self.hierarchyTree)
         self.hierarchyTree.header().setDefaultSectionSize(200)
         self.propertyTable = QtGui.QTableWidget(self.propertySplitter)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
@@ -127,11 +126,6 @@ class Ui_MainWindow(object):
         self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Birth Springs 1", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Name", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
-        __sortingEnabled = self.hierarchyTree.isSortingEnabled()
-        self.hierarchyTree.setSortingEnabled(False)
-        self.hierarchyTree.topLevelItem(0).setText(0, QtGui.QApplication.translate("MainWindow", "world", None, QtGui.QApplication.UnicodeUTF8))
-        self.hierarchyTree.topLevelItem(0).setText(1, QtGui.QApplication.translate("MainWindow", "World", None, QtGui.QApplication.UnicodeUTF8))
-        self.hierarchyTree.setSortingEnabled(__sortingEnabled)
         item = self.propertyTable.horizontalHeaderItem(0)
         item.setText(QtGui.QApplication.translate("MainWindow", "Property", None, QtGui.QApplication.UnicodeUTF8))
         item = self.propertyTable.horizontalHeaderItem(1)

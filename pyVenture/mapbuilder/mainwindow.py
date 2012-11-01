@@ -20,8 +20,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		# connect menu items
 		self.actionE_xit.triggered.connect( self.close )
 		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
+		self.actionOpen.triggered.connect( self.loadFileDialog )
 
-		self.load('sample.pvm')
+		#self.load('sample.pvm')
+
+	def loadFileDialog(self):
+
+		filename = QtGui.QFileDialog.getOpenFileName(parent = self, caption = 'Open Map File', filter = 'Map files (*.pvm *.pvm.gz)')
+		if filename != '':
+			self.load(filename)
 
 	def load(self, filename):
 
@@ -117,3 +124,4 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			for name, value in treeItem.ventureObject.properties.items():
 				self.propertyTable.setItem( i,0, QtGui.QTableWidgetItem(name) )
 				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
+
