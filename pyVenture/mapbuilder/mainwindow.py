@@ -50,18 +50,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		for key, area in self.world.areas.items():
 			areaItem = QtGui.QTreeWidgetItem(self.hierarchyTree, [ area.id, 'Area' ])
+			areaItem.ventureObject = area
 			self.hierarchyTree.addTopLevelItem(areaItem)
 
 			for feature in area.features:
 				featureItem = QtGui.QTreeWidgetItem(areaItem, [feature.name, 'Feature'])
+				featureItem.ventureObject = feature
 				areaItem.addChild(featureItem)
 
 				for action in feature.actions:
 					actionItem = QtGui.QTreeWidgetItem(featureItem, [action.description, 'Action'])
+					actionItem.ventureObject = action
 					featureItem.addChild(actionItem)
 
 					for event in action.events:
-						eventItem = QtGui.QTreeWidgetItem(actionItem, [event.type, event.type])
+						eventItem = QtGui.QTreeWidgetItem(actionItem, [event.type, 'Event'])
+						eventItem.ventureObject = event
 						actionItem.addChild(eventItem)
 
 				featureItem.sortChildren(0, Qt.AscendingOrder)
@@ -77,42 +81,39 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		if treeItem.text(1) == 'Area':
 
-			item = self.world.areas[treeItem.text(0).__str__()]
 			self.propertyTable.setRowCount(3)
 
 			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('id') )
-			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( item.id ) )
+			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( treeItem.ventureObject.id ) )
 
 			self.propertyTable.setItem( 1,0, QtGui.QTableWidgetItem('name') )
-			self.propertyTable.setItem( 1,1, QtGui.QTableWidgetItem( item.name ) )
+			self.propertyTable.setItem( 1,1, QtGui.QTableWidgetItem( treeItem.ventureObject.name ) )
 
 			self.propertyTable.setItem( 2,0, QtGui.QTableWidgetItem('entranceText') )
-			self.propertyTable.setItem( 2,1, QtGui.QTableWidgetItem( item.entranceText ) )
+			self.propertyTable.setItem( 2,1, QtGui.QTableWidgetItem( treeItem.ventureObject.entranceText ) )
 
 		elif treeItem.text(1) == 'Feature':
 			
-			parentTreeArea = treeItem.parent()
-			parentArea = self.world.areas[ parentTreeArea.text(0).__str__() ]
-			item = parentArea.features[ parentTreeArea.indexOfChild(treeItem) ]
-
 			self.propertyTable.setRowCount(2)
 
 			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('name') )
-			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( item.name ) )
+			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( treeItem.ventureObject.name ) )
 
 			self.propertyTable.setItem( 1,0, QtGui.QTableWidgetItem('description') )
-			self.propertyTable.setItem( 1,1, QtGui.QTableWidgetItem( item.description ) )
+			self.propertyTable.setItem( 1,1, QtGui.QTableWidgetItem( treeItem.ventureObject.description ) )
 
 		elif treeItem.text(1) == 'Action':
-
-			parentTreeFeature = treeItem.parent()
-			parentTreeArea = parentTreeFeature.parent()
-			parentArea = self.world.areas[ parentTreeArea.text(0).__str__() ]
-			parentFeature = parentArea.features[ parentTreeArea.indexOfChild(parentTreeFeature) ]
-			item = parentFeature.actions[ parentTreeFeature.indexOfChild(treeItem) ]
 
 			self.propertyTable.setRowCount(1)
 
 			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('description') )
-			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( item.description ) )
+			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( treeItem.ventureObject.description ) )
 
+		else:
+
+			self.propertyTable.setRowCount( len(treeItem.ventureObject.properties) )
+
+			i = 0
+			for name, value in treeItem.ventureObject.properties.items():
+				self.propertyTable.setItem( i,0, QtGui.QTableWidgetItem(name) )
+				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
