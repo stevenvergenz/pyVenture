@@ -125,3 +125,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 				self.propertyTable.setItem( i,0, QtGui.QTableWidgetItem(name) )
 				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
 
+
+		# set all cells in col 0 read-only
+		for index in range(0, self.propertyTable.rowCount()):
+
+			item = self.propertyTable.item(index, 0).setFlags(Qt.NoItemFlags | Qt.ItemIsEnabled)
+
+
