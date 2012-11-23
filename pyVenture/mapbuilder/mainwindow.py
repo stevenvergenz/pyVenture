@@ -21,14 +21,17 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.actionE_xit.triggered.connect( self.close )
 		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
 		self.actionOpen.triggered.connect( self.loadFileDialog )
+		self.propertyTable.cellChanged.connect( self.editProperty )
 
 		#self.load('sample.pvm')
+
 
 	def loadFileDialog(self):
 
 		filename = QtGui.QFileDialog.getOpenFileName(parent = self, caption = 'Open Map File', filter = 'Map files (*.pvm *.pvm.gz)')
 		if filename != '':
 			self.load(filename)
+
 
 	def load(self, filename):
 
@@ -85,6 +88,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.propertyTable.clear()
 		self.propertyTable.setHorizontalHeaderLabels( ['Property', 'Value'] )
 		treeItem = self.hierarchyTree.selectedItems()[0]
+		self.propertyTable.ventureObject = treeItem.ventureObject
 
 		if treeItem.text(1) == 'Area':
 
@@ -128,7 +132,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		# set all cells in col 0 read-only
 		for index in range(0, self.propertyTable.rowCount()):
-
 			item = self.propertyTable.item(index, 0).setFlags(Qt.NoItemFlags | Qt.ItemIsEnabled)
+
+
+	def editProperty(self, row, column):
+
+		key = self.propertyTable.item(row,0).text()
+		value = self.propertyTable.item(row,column).text()
+		self.propertyTable.ventureObject[key] = value
+		print 'The value of',key,'is now',value
 
 
