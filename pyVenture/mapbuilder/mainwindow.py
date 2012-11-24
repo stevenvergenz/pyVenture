@@ -51,8 +51,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		try:
 			outfile.write( json.dumps(self.world.serialize(), indent=4) )
 			print 'Dump to file',self.filename,'successful'
-		except:
+		except Exception as e:
 			print 'Failed to convert world to JSON, save failed.'
+			print str(e)
 
 		outfile.close()
 
@@ -123,6 +124,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		treeItem = self.hierarchyTree.selectedItems()[0]
 		self.propertyTable.ventureObject = treeItem.ventureObject
 
+
 		if treeItem.text(1) == 'Area':
 
 			self.propertyTable.setRowCount(3)
@@ -173,8 +175,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		if( column != 1 ): return
 
 		key = self.propertyTable.item(row,0).text()
-		value = self.propertyTable.item(row,column).text()
+		value = str(self.propertyTable.item(row,column).text())
 		setattr( self.propertyTable.ventureObject, str(key), value)
-		print 'The value of',key,'is now',value
+		#print 'The value of',key,'is now',value
 
 
