@@ -16,21 +16,54 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		QtGui.QMainWindow.__init__(self)
 		self.setupUi(self)
 		self.mainSplitter.setSizes([400,200])
+		self.filename = ''
 
 		# connect menu items
 		self.actionE_xit.triggered.connect( self.close )
 		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
 		self.actionOpen.triggered.connect( self.loadFileDialog )
 		self.propertyTable.cellChanged.connect( self.editProperty )
-
+		self.actionSave.triggered.connect( self.saveFileDialog )
+		self.actionSave_As.triggered.connect( self.saveAsFileDialog )
 		#self.load('sample.pvm')
 
 
 	def loadFileDialog(self):
 
-		filename = QtGui.QFileDialog.getOpenFileName(parent = self, caption = 'Open Map File', filter = 'Map files (*.pvm *.pvm.gz)')
+		filename = QtGui.QFileDialog.getOpenFileName(parent = self, caption = 'Open Map File',
+			filter = 'Map files (*.pvm *.pvm.gz)')
 		if filename != '':
 			self.load(filename)
+			self.filename = str(filename)
+
+
+	def saveFileDialog(self):
+		
+		if self.filename == '':
+			self.saveAsFileDialog()
+			return
+
+		if self.filename[-2:] == 'gz':
+			outfile = gzip.open(self.filename, 'w')
+		else:
+			outfile = open(self.filename, 'w')
+
+		#try:
+		outfile.write( json.dumps(self.world.serialize(), indent=4) )
+		print 'Dump to file',self.filename,'successful'
+		#except:
+		print 'Failed to convert world to JSON, save failed.'
+
+		outfile.close()
+
+
+	def saveAsFileDialog(self):
+
+		filename = QtGui.QFileDialog.getSaveFileName(parent = self, caption = 'Save Map File',
+			filter = 'Compressed map files (*.pvm.gz);;Map files (*.pvm)')
+		if filename != '':
+			self.filename = str(filename)
+			self.saveFileDialog()
 
 
 	def load(self, filename):
@@ -137,9 +170,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def editProperty(self, row, column):
 
+		if( column != 1 ): return
+
 		key = self.propertyTable.item(row,0).text()
 		value = self.propertyTable.item(row,column).text()
-		self.propertyTable.ventureObject[key] = value
+		setattr( self.propertyTable.ventureObject, str(key), value)
 		print 'The value of',key,'is now',value
 
 

@@ -51,7 +51,7 @@ class Event(Serial):
 		
 	def serialize(self):
 		"""Serializes the event into a dictionary for file dumping."""
-		return {'type': self.type} + self.properties
+		return dict({'type': self.type}.items() + self.properties.items())
 		
 # end class Event
 
