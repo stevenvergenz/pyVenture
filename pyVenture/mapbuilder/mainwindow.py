@@ -48,11 +48,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		else:
 			outfile = open(self.filename, 'w')
 
-		#try:
-		outfile.write( json.dumps(self.world.serialize(), indent=4) )
-		print 'Dump to file',self.filename,'successful'
-		#except:
-		print 'Failed to convert world to JSON, save failed.'
+		try:
+			outfile.write( json.dumps(self.world.serialize(), indent=4) )
+			print 'Dump to file',self.filename,'successful'
+		except:
+			print 'Failed to convert world to JSON, save failed.'
 
 		outfile.close()
 
