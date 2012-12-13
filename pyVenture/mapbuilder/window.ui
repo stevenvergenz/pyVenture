@@ -133,14 +133,6 @@
           <string>Type</string>
          </property>
         </column>
-        <item>
-         <property name="text">
-          <string>world</string>
-         </property>
-         <property name="text">
-          <string>World</string>
-         </property>
-        </item>
        </widget>
        <widget class="QTableWidget" name="propertyTable">
         <property name="sizePolicy">
