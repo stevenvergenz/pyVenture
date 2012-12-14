@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Wed Oct 31 21:51:02 2012
+# Created: Fri Dec 14 14:49:49 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,35 +20,13 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 600)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
-        self.verticalLayout_2 = QtGui.QVBoxLayout(self.centralwidget)
-        self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
+        self.horizontalLayout = QtGui.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.mainSplitter = QtGui.QSplitter(self.centralwidget)
-        self.mainSplitter.setMinimumSize(QtCore.QSize(0, 0))
         self.mainSplitter.setOrientation(QtCore.Qt.Horizontal)
-        self.mainSplitter.setChildrenCollapsible(False)
         self.mainSplitter.setObjectName(_fromUtf8("mainSplitter"))
-        self.scrollArea = QtGui.QScrollArea(self.mainSplitter)
-        self.scrollArea.setMinimumSize(QtCore.QSize(200, 0))
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollArea.setObjectName(_fromUtf8("scrollArea"))
-        self.areaMap = QtGui.QWidget()
-        self.areaMap.setGeometry(QtCore.QRect(0, 0, 194, 541))
-        self.areaMap.setObjectName(_fromUtf8("areaMap"))
-        self.label = QtGui.QLabel(self.areaMap)
-        self.label.setGeometry(QtCore.QRect(70, 210, 71, 41))
-        self.label.setFrameShape(QtGui.QFrame.Box)
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setWordWrap(True)
-        self.label.setMargin(0)
-        self.label.setObjectName(_fromUtf8("label"))
-        self.label_2 = QtGui.QLabel(self.areaMap)
-        self.label_2.setGeometry(QtCore.QRect(90, 110, 71, 41))
-        self.label_2.setFrameShape(QtGui.QFrame.Box)
-        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_2.setWordWrap(True)
-        self.label_2.setMargin(0)
-        self.label_2.setObjectName(_fromUtf8("label_2"))
-        self.scrollArea.setWidget(self.areaMap)
+        self.graphicsView = QtGui.QGraphicsView(self.mainSplitter)
+        self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
         self.propertySplitter = QtGui.QSplitter(self.mainSplitter)
         self.propertySplitter.setOrientation(QtCore.Qt.Vertical)
         self.propertySplitter.setObjectName(_fromUtf8("propertySplitter"))
@@ -84,7 +62,7 @@ class Ui_MainWindow(object):
         self.propertyTable.horizontalHeader().setDefaultSectionSize(120)
         self.propertyTable.horizontalHeader().setStretchLastSection(True)
         self.propertyTable.verticalHeader().setVisible(False)
-        self.verticalLayout_2.addWidget(self.mainSplitter)
+        self.horizontalLayout.addWidget(self.mainSplitter)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 20))
@@ -122,8 +100,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "MainWindow", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("MainWindow", "Armory 1", None, QtGui.QApplication.UnicodeUTF8))
-        self.label_2.setText(QtGui.QApplication.translate("MainWindow", "Birth Springs 1", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Name", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
         item = self.propertyTable.horizontalHeaderItem(0)

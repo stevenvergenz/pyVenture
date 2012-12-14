@@ -1,5 +1,5 @@
 from window import Ui_MainWindow
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore, QtSvg
 from PyQt4.QtCore import Qt
 
 from common import types
@@ -7,6 +7,7 @@ from common import events
 
 import json
 import gzip
+import pydot
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
@@ -17,6 +18,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.setupUi(self)
 		self.mainSplitter.setSizes([400,200])
 		self.filename = ''
+		self.graphicsScene = QtGui.QGraphicsScene()
+		self.graphicsView.setScene( self.graphicsScene )
 
 		# connect menu items
 		self.actionE_xit.triggered.connect( self.close )
@@ -112,9 +115,48 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 						eventItem.ventureObject = event
 						actionItem.addChild(eventItem)
 
-				featureItem.sortChildren(0, Qt.AscendingOrder)
-			areaItem.sortChildren(0, Qt.AscendingOrder)
-		self.hierarchyTree.sortItems(0, Qt.AscendingOrder)
+		#		featureItem.sortChildren(0, Qt.AscendingOrder)
+		#	areaItem.sortChildren(0, Qt.AscendingOrder)
+		#self.hierarchyTree.sortItems(0, Qt.AscendingOrder)
+
+		self.updateMapWidget()
+
+
+	def updateMapWidget(self):
+
+		graph = pydot.Dot()
+
+		# build adjacency graph from world
+		for area in self.world.areas.values():
+		
+			# create node for each room
+			node = pydot.Node(area.id)
+			graph.add_node(node)
+
+			# link to adjacent rooms
+			breakFlag = False
+			for feature in area.features:
+				for action in feature.actions:
+					for event in action.events:
+						if type(event) == events.PlayerMoveEvent:
+							graph.add_edge( pydot.Edge( src=area.id, dst=event.properties['destination'] ) )
+							breakFlag = True
+							break
+					if breakFlag:
+						break
+				
+		ps = graph.create_svg()
+		psBytes = QtCore.QByteArray(ps)
+		renderer = QtSvg.QSvgRenderer(psBytes)
+		svgItem = QtSvg.QGraphicsSvgItem()
+		svgItem.setSharedRenderer(renderer)
+		self.graphicsScene = QtGui.QGraphicsScene()
+		self.graphicsScene.addItem(svgItem)
+
+		self.graphicsView.setScene(self.graphicsScene)
+		self.graphicsView.setInteractive(True)
+		self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
+	
 
 
 	def updatePropertyTable(self):

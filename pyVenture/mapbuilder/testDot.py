@@ -22,9 +22,16 @@ def main():
 	ps = graph.create_svg()
 	byteArray = QtCore.QByteArray(ps)
 
-	label = QtSvg.QSvgWidget(None)
-	label.load(byteArray)
-	label.show()
+	renderer = QtSvg.QSvgRenderer(byteArray)
+	svgItem = QtSvg.QGraphicsSvgItem()
+	svgItem.setSharedRenderer(renderer)
+	scene = QtGui.QGraphicsScene()
+	scene.addItem(svgItem)
+
+	view = QtGui.QGraphicsView(scene)
+	view.setInteractive(True)
+	view.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
+	view.show()
 
 	sys.exit(app.exec_())
 
