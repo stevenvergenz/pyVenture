@@ -131,6 +131,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		
 			# create node for each room
 			node = pydot.Node(area.id)
+			node.set( 'label', area.name )
 			graph.add_node(node)
 
 			# link to adjacent rooms
@@ -145,7 +146,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 					if breakFlag:
 						break
 				
-		ps = graph.create_svg()
+		ps = graph.create_svg(prog='neato')
 		psBytes = QtCore.QByteArray(ps)
 		renderer = QtSvg.QSvgRenderer(psBytes)
 		svgItem = QtSvg.QGraphicsSvgItem()
