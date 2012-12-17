@@ -17,21 +17,57 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		QtGui.QMainWindow.__init__(self)
 		self.setupUi(self)
 		self.mainSplitter.setSizes([400,200])
+
 		self.filename = ''
+		self.world = types.World()
+		self.oldWorld = types.World()
+
 		self.graphicsScene = QtGui.QGraphicsScene()
 		self.graphicsView.setScene( self.graphicsScene )
 
 		# connect menu items
 		self.actionE_xit.triggered.connect( self.close )
-		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
 		self.actionOpen.triggered.connect( self.loadFileDialog )
-		self.propertyTable.cellChanged.connect( self.editProperty )
 		self.actionSave.triggered.connect( self.saveFileDialog )
 		self.actionSave_As.triggered.connect( self.saveAsFileDialog )
+		self.actionNew.triggered.connect( self.newFileDialog )
+
+		# connect property listing to the tree widget
+		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
+		self.propertyTable.cellChanged.connect( self.editProperty )
+
 		#self.load('sample.pvm')
 
+	def newFileDialog(self):
+
+		if self.world != self.oldWorld:
+			result = QtGui.QMessageBox.warning( self, 'Save changes',
+				'The active world has changed since last saved, would you like to save it now?',
+				QtGui.QMessageBox.Yes | QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, 
+				QtGui.QMessageBox.Yes )
+			if result == QtGui.QMessageBox.Yes:
+				self.saveFileDialog()
+			elif result == QtGui.QMessageBox.Cancel:
+				return
+
+		self.oldWorld = types.World()
+		self.world = types.World()
+		self.hierarchyTree.clear()
+		self.graphicsScene.clear()
+		self.propertyTable.setRowCount(0)
+		
 
 	def loadFileDialog(self):
+
+		if self.world != self.oldWorld:
+			result = QtGui.QMessageBox.warning( self, 'Save Changes',
+				'The active world has changed since last saved, would you like to save it now?',
+				QtGui.QMessageBox.Yes | QtGui.QMessageBox.No | QtGui.QMessageBox.Cancel, 
+				QtGui.QMessageBox.Yes )
+			if result == QtGui.QMessageBox.Yes:
+				self.saveFileDialog()
+			elif result == QtGui.QMessageBox.Cancel:
+				return
 
 		filename = QtGui.QFileDialog.getOpenFileName(parent = self, caption = 'Open Map File',
 			filter = 'Map files (*.pvm *.pvm.gz)')
@@ -53,6 +89,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		try:
 			outfile.write( json.dumps(self.world.serialize(), indent=4) )
+			self.oldWorld = types.World.deserialize( self.world.serialize() )
 			print 'Dump to file',self.filename,'successful'
 		except Exception as e:
 			print 'Failed to convert world to JSON, save failed.'
@@ -91,6 +128,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		# populate tree
 		self.world = types.World.deserialize(dump)
+		self.oldWorld = types.World.deserialize( self.world.serialize() )
 		print 'Parse successful'
 
 		self.hierarchyTree.clear()
@@ -162,8 +200,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def updatePropertyTable(self):
 
-		self.propertyTable.clear()
 		self.propertyTable.setHorizontalHeaderLabels( ['Property', 'Value'] )
+		if len( self.hierarchyTree.selectedItems() ) == 0:
+			self.propertyTable.setRowCount(0)
+			return
+		
 		treeItem = self.hierarchyTree.selectedItems()[0]
 		self.propertyTable.ventureObject = treeItem.ventureObject
 

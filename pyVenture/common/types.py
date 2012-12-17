@@ -34,7 +34,29 @@ class World(Serial):
 		dump['player'] = self.player.serialize()
 		
 		return dump		
-	
+
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if (self.player != None and other.player != None) and self.player != other.player:
+			return False
+
+		for id,area in self.areas.items():
+			if id not in other.areas or area != other.areas[id]:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
+
 # end class World
 
 
@@ -57,7 +79,30 @@ class Area(Serial):
 			dump['features'].append( feature.serialize() )
 		
 		return dump
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if self.name != other.name or self.entranceText != other.entranceText:
+			return False
+
+		if len(self.features) != len(other.features):
+			return False
+
+		for i in range(len(self.features)):
+			if self.features[i] != other.features[i]:
+				return False
+
+		return True
 		
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
 # end class Area
 
 
@@ -80,6 +125,30 @@ class Feature(Serial):
 			dump['actions'].append( action.serialize() )
 
 		return dump
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if self.name != other.name or self.description != other.description:
+			return False
+
+		if len(self.actions) != len(other.actions):
+			return False
+
+		for i in range(len(self.actions)):
+			if self.actions[i] != other.actions[i]:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
 		
 # end class Feature
 
@@ -108,6 +177,30 @@ class Action(Serial):
 		
 		return dump
 	
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if self.description != other.description:
+			return False
+
+		if len(self.events) != len(other.events):
+			return False
+
+		for i in range(len(self.events)):
+			if self.events[i] != other.events[i]:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
+
 # end class Action
 
 
@@ -128,5 +221,18 @@ class Player(Serial):
 			dump['items'].append(i)
 
 		return dump
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
 
 # end class Player

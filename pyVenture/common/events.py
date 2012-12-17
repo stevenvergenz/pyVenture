@@ -52,7 +52,12 @@ class Event(Serial):
 	def serialize(self):
 		"""Serializes the event into a dictionary for file dumping."""
 		return dict({'type': self.type}.items() + self.properties.items())
-		
+
+	def __eq__(self, other):
+		if type(self) == type(other):
+			return self.properties == other.properties
+		return NotImplemented
+
 # end class Event
 
 
