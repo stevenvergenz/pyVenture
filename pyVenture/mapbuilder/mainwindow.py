@@ -25,6 +25,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.graphicsScene = QtGui.QGraphicsScene()
 		self.graphicsView.setScene( self.graphicsScene )
 
+		# connect toolbar buttons
+		self.actionNew.setIcon( QtGui.QIcon(':/trolltech/styles/commonstyle/images/file-32.png') )
+		self.actionOpen.setIcon( QtGui.QIcon(':/trolltech/styles/commonstyle/images/diropen-32.png') )
+		self.actionSave.setIcon( QtGui.QIcon(':/trolltech/styles/commonstyle/images/standardbutton-save-32.png') )
+		self.toolBar.addAction(self.actionNew)
+		self.toolBar.addAction(self.actionOpen)
+		self.toolBar.addAction(self.actionSave)
+
 		# connect menu items
 		self.actionE_xit.triggered.connect( self.close )
 		self.actionOpen.triggered.connect( self.loadFileDialog )
