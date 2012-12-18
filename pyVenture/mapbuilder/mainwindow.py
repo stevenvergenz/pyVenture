@@ -7,6 +7,7 @@ from common import events
 
 import json
 import gzip
+import traceback
 import pydot
 
 
@@ -155,7 +156,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			print 'Dump to file',self.filename,'successful'
 		except Exception as e:
 			print 'Failed to convert world to JSON, save failed.'
-			print str(e)
+			traceback.print_exc(e)
 
 		outfile.close()
 
@@ -260,6 +261,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('id') )
 			self.propertyTable.setItem( 0,1, QtGui.QTableWidgetItem( treeItem.ventureObject.id ) )
+			self.propertyTable.item(0,1).setFlags(Qt.NoItemFlags | Qt.ItemIsEnabled)
 
 			self.propertyTable.setItem( 1,0, QtGui.QTableWidgetItem('name') )
 			self.propertyTable.setItem( 1,1, QtGui.QTableWidgetItem( treeItem.ventureObject.name ) )
@@ -341,7 +343,25 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def addSibling(self):
 
-		treeItem = self.hierarchyTree.selectedItems()[0]
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			item = None
+
+		if item is None:
+			newVentureObj = types.Area('New area', 'You enter an unremarkable room.')
+			self.world.addArea(newVentureObj)
+			newTreeItem = QtGui.QTreeWidgetItem(self.hierarchyTree, [newVentureObj.id, 'Area'])
+			newTreeItem.ventureObject = newVentureObj
+			self.updateMapWidget()
+
+		elif isinstance(item.ventureObject, types.Area):
+			newVentureObj = types.Area('New area', 'You enter an unremarkable room.')
+			self.world.addArea(newVentureObj)
+			newTreeItem = QtGui.QTreeWidgetItem(self.hierarchyTree, item)
+			newTreeItem.ventureObject = newVentureObj
+			newTreeItem.setText(0, newVentureObj.id)
+			newTreeItem.setText(1, 'Area')
 
 
 	def addChild(self):
@@ -371,6 +391,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		key = self.propertyTable.item(row,0).text()
 		value = str(self.propertyTable.item(row,column).text())
 		setattr( self.propertyTable.ventureObject, str(key), value)
+
+		if isinstance(self.propertyTable.ventureObject, types.Area) and key == 'name':
+			self.world.updateArea(self.propertyTable.ventureObject)
+			self.hierarchyTree.selectedItems()[0].setText(0, self.propertyTable.ventureObject.id)
+			self.propertyTable.item(0,1).setText( self.propertyTable.ventureObject.id )
+			self.updateMapWidget()
+
 		#print 'The value of',key,'is now',value
 
 

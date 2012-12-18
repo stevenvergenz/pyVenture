@@ -6,16 +6,24 @@ class World(Serial):
 	def __init__(self):
 
 		self.areas = {}
-		self.player = None
+		self.player = Player('Hero')
 		
 	def addArea(self, area):
 	
 		if not isinstance(area, Area):
 			raise TypeError('Cannot add a non-area to the area list')
-			
+		
+		if self.player.currentArea == None:
+			self.player.currentArea = area
+
 		area.id = self._generateId(area)
 		area.parentWorld = self
 		self.areas[area.id] = area
+
+	def updateArea(self, area):
+
+		del self.areas[area.id]
+		self.addArea(area)
 		
 	def _generateId(self, area):
 
@@ -218,7 +226,7 @@ class Player(Serial):
 		dump['currentArea'] = self.currentArea.id
 		dump['inventory'] = []
 		for i in self.inventory:
-			dump['items'].append(i)
+			dump['inventory'].append(i)
 
 		return dump
 
