@@ -28,7 +28,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.pushMoveUp.setIcon( style.standardIcon( QtGui.QStyle.SP_ArrowUp ) )
 		self.pushMoveDown.setIcon( style.standardIcon( QtGui.QStyle.SP_ArrowDown ) )
 		self.pushDeleteItem.setIcon(style.standardIcon(QtGui.QStyle.SP_TrashIcon))
-		self.pushNewItem.setIcon(style.standardIcon(QtGui.QStyle.SP_FileDialogNewFolder))
+		self.pushNewSibling.setIcon(style.standardIcon(QtGui.QStyle.SP_FileDialogNewFolder))
 		self.pushNewChild.setIcon(style.standardIcon(QtGui.QStyle.SP_FileIcon))
 
 		self.filename = ''
@@ -60,10 +60,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		# connect property listing to the tree widget
 		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
+		self.hierarchyTree.itemSelectionChanged.connect( self.updateButtonAvailability )
 		self.propertyTable.cellChanged.connect( self.editProperty )
+
+		# connect object tree manipulation buttons
+		self.pushNewSibling.clicked.connect( self.addSibling )
+		self.pushNewChild.clicked.connect( self.addChild )
+		self.pushDeleteItem.clicked.connect( self.deleteItem )
+		self.pushMoveUp.clicked.connect( self.moveItemUp )
+		self.pushMoveDown.clicked.connect( self.moveItemDown )
 
 		#self.load('sample.pvm')
 
+
+	#################################################
+	### Open/Save Functions
+	#################################################
 
 	def newFileDialog(self):
 		'''Prompt for save if appropriate, and load an empty map'''
@@ -157,6 +169,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			self.filename = str(filename)
 			self.saveFileDialog()
 
+
+	########################################################
+	### Object browser handling
+	########################################################
 
 	def buildHierarchyTree(self):
 		'''Build object hierarchy from scratch'''
@@ -281,6 +297,71 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		# set all cells in col 0 read-only
 		for index in range(0, self.propertyTable.rowCount()):
 			item = self.propertyTable.item(index, 0).setFlags(Qt.NoItemFlags | Qt.ItemIsEnabled)
+
+
+	##################################################
+	### Modifying the tree and the table
+	##################################################
+
+	def updateButtonAvailability(self):
+
+		active = {'newSibling': True, 'newChild': False, 'delete': False, 'moveUp': False, 'moveDown': False}
+
+		items = self.hierarchyTree.selectedItems()
+		item = items[0] if len(items)>0 else None
+		if item is None:
+			index = -1
+			maxIndex = -1
+		elif item.parent() is not None:
+			index = item.parent().indexOfChild(item)
+			maxIndex = item.parent().childCount()-1
+		else:
+			index = self.hierarchyTree.indexOfTopLevelItem(item)
+			maxIndex = self.hierarchyTree.topLevelItemCount()-1
+
+		if len(items) == 0:
+			# default state
+			pass
+
+		else:
+			active['delete'] = True
+			if not isinstance(item.ventureObject, events.Event):
+				active['newChild'] = True
+			if index > 0:
+				active['moveUp'] = True
+			if index >= 0 and index < maxIndex:
+				active['moveDown'] = True
+
+		self.pushNewSibling.setDisabled( not active['newSibling'] )
+		self.pushNewChild.setDisabled( not active['newChild'] )
+		self.pushDeleteItem.setDisabled( not active['delete'] )
+		self.pushMoveUp.setDisabled( not active['moveUp'] )
+		self.pushMoveDown.setDisabled( not active['moveDown'] )
+
+
+	def addSibling(self):
+
+		treeItem = self.hierarchyTree.selectedItems()[0]
+
+
+	def addChild(self):
+
+		treeItem = self.hierarchyTree.selectedItems()[0]
+
+
+	def deleteItem(self):
+
+		pass
+
+
+	def moveItemUp(self):
+
+		pass
+
+
+	def moveItemDown(self):
+
+		pass
 
 
 	def editProperty(self, row, column):

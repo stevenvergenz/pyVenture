@@ -81,7 +81,7 @@
              <number>0</number>
             </property>
             <item>
-             <widget class="QPushButton" name="pushNewItem">
+             <widget class="QPushButton" name="pushNewSibling">
               <property name="toolTip">
                <string>New Sibling</string>
               </property>

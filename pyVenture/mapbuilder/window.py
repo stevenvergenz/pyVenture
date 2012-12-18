@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Tue Dec 18 14:23:34 2012
+# Created: Tue Dec 18 16:20:24 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -56,10 +56,10 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtGui.QHBoxLayout(self.frame_2)
         self.horizontalLayout.setMargin(0)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
-        self.pushNewItem = QtGui.QPushButton(self.frame_2)
-        self.pushNewItem.setText(_fromUtf8(""))
-        self.pushNewItem.setObjectName(_fromUtf8("pushNewItem"))
-        self.horizontalLayout.addWidget(self.pushNewItem)
+        self.pushNewSibling = QtGui.QPushButton(self.frame_2)
+        self.pushNewSibling.setText(_fromUtf8(""))
+        self.pushNewSibling.setObjectName(_fromUtf8("pushNewSibling"))
+        self.horizontalLayout.addWidget(self.pushNewSibling)
         self.pushNewChild = QtGui.QPushButton(self.frame_2)
         self.pushNewChild.setText(_fromUtf8(""))
         self.pushNewChild.setObjectName(_fromUtf8("pushNewChild"))
@@ -161,7 +161,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "pyVenture Map Builder", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Name", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
-        self.pushNewItem.setToolTip(QtGui.QApplication.translate("MainWindow", "New Sibling", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushNewSibling.setToolTip(QtGui.QApplication.translate("MainWindow", "New Sibling", None, QtGui.QApplication.UnicodeUTF8))
         self.pushNewChild.setToolTip(QtGui.QApplication.translate("MainWindow", "New Child", None, QtGui.QApplication.UnicodeUTF8))
         self.pushDeleteItem.setToolTip(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
         self.pushMoveUp.setToolTip(QtGui.QApplication.translate("MainWindow", "Move Up", None, QtGui.QApplication.UnicodeUTF8))
