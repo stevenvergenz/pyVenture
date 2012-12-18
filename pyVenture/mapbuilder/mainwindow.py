@@ -11,12 +11,25 @@ import pydot
 
 
 class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
+	'''The root class of the GUI that manages the widgets'''
 
 	def __init__(self):
+		'''Initialize all the GUI-related items that could not be done in the WYSIWYG editor'''
 
 		QtGui.QMainWindow.__init__(self)
 		self.setupUi(self)
 		self.mainSplitter.setSizes([400,200])
+
+		# set icons
+		style = QtGui.QCommonStyle()
+		self.actionNew.setIcon( style.standardIcon( QtGui.QStyle.SP_FileIcon ) )
+		self.actionOpen.setIcon( style.standardIcon( QtGui.QStyle.SP_DirOpenIcon ) )
+		self.actionSave.setIcon( style.standardIcon( QtGui.QStyle.SP_DialogSaveButton ) )
+		self.pushMoveUp.setIcon( style.standardIcon( QtGui.QStyle.SP_ArrowUp ) )
+		self.pushMoveDown.setIcon( style.standardIcon( QtGui.QStyle.SP_ArrowDown ) )
+		self.pushDeleteItem.setIcon(style.standardIcon(QtGui.QStyle.SP_TrashIcon))
+		self.pushNewItem.setIcon(style.standardIcon(QtGui.QStyle.SP_FileDialogNewFolder))
+		self.pushNewChild.setIcon(style.standardIcon(QtGui.QStyle.SP_FileIcon))
 
 		self.filename = ''
 		self.world = types.World()
@@ -26,19 +39,24 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.graphicsView.setScene( self.graphicsScene )
 
 		# connect toolbar buttons
-		self.actionNew.setIcon( QtGui.QIcon(':/trolltech/styles/commonstyle/images/file-32.png') )
-		self.actionOpen.setIcon( QtGui.QIcon(':/trolltech/styles/commonstyle/images/diropen-32.png') )
-		self.actionSave.setIcon( QtGui.QIcon(':/trolltech/styles/commonstyle/images/standardbutton-save-32.png') )
 		self.toolBar.addAction(self.actionNew)
 		self.toolBar.addAction(self.actionOpen)
 		self.toolBar.addAction(self.actionSave)
 
-		# connect menu items
+	
+		# connect File menu items
 		self.actionE_xit.triggered.connect( self.close )
 		self.actionOpen.triggered.connect( self.loadFileDialog )
 		self.actionSave.triggered.connect( self.saveFileDialog )
 		self.actionSave_As.triggered.connect( self.saveAsFileDialog )
 		self.actionNew.triggered.connect( self.newFileDialog )
+
+		# connect Player menu items
+
+
+		# connect Help menu items
+		def aboutQt(): QtGui.QMessageBox.aboutQt(self)
+		self.actionAbout_Qt.triggered.connect( aboutQt )
 
 		# connect property listing to the tree widget
 		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
@@ -46,7 +64,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		#self.load('sample.pvm')
 
+
 	def newFileDialog(self):
+		'''Prompt for save if appropriate, and load an empty map'''
 
 		if self.world != self.oldWorld:
 			result = QtGui.QMessageBox.warning( self, 'Save changes',
@@ -66,6 +86,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		
 
 	def loadFileDialog(self):
+		'''Prompt for save if appropriate, and load chosen map'''
 
 		if self.world != self.oldWorld:
 			result = QtGui.QMessageBox.warning( self, 'Save Changes',
@@ -79,13 +100,34 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		filename = QtGui.QFileDialog.getOpenFileName(parent = self, caption = 'Open Map File',
 			filter = 'Map files (*.pvm *.pvm.gz)')
-		if filename != '':
-			self.load(filename)
-			self.filename = str(filename)
+
+		if filename == '': return
+
+		dump = {}
+		with gzip.open(filename, 'r') if filename[-2:] == 'gz' else open(filename, 'r') as file:
+			try:
+				tempstr = file.read()
+				dump = json.loads(tempstr)
+			except:
+				print 'There was a problem loading', filename
+
+
+		# populate tree
+		self.world = types.World.deserialize(dump)
+		self.oldWorld = types.World.deserialize( self.world.serialize() )
+		print 'Parse successful'
+
+		# update widgets
+		self.buildHierarchyTree()
+		self.updateMapWidget()
+
+		# use given file as save target
+		self.filename = str(filename)
 
 
 	def saveFileDialog(self):
-		
+		'''Save if filename is known, prompt otherwise'''
+
 		if self.filename == '':
 			self.saveAsFileDialog()
 			return
@@ -107,6 +149,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 
 	def saveAsFileDialog(self):
+		'''Prompt for filename and save'''
 
 		filename = QtGui.QFileDialog.getSaveFileName(parent = self, caption = 'Save Map File',
 			filter = 'Compressed map files (*.pvm.gz);;Map files (*.pvm)')
@@ -115,29 +158,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			self.saveFileDialog()
 
 
-	def load(self, filename):
-
-		dump = {}
-		if filename[-2:] == 'gz':
-			with gzip.open(filename, 'r') as file:
-				try:
-					tempstr = file.read()
-					dump = json.loads(tempstr)
-				except:
-					print 'There was a problem loading', filename
-
-		else:
-			with open(filename, 'r') as file:
-				try:
-					tempstr = file.read()
-					dump = json.loads(tempstr)
-				except:
-					print 'There was a problem loading', filename
-
-		# populate tree
-		self.world = types.World.deserialize(dump)
-		self.oldWorld = types.World.deserialize( self.world.serialize() )
-		print 'Parse successful'
+	def buildHierarchyTree(self):
+		'''Build object hierarchy from scratch'''
 
 		self.hierarchyTree.clear()
 
@@ -165,7 +187,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		#	areaItem.sortChildren(0, Qt.AscendingOrder)
 		#self.hierarchyTree.sortItems(0, Qt.AscendingOrder)
 
-		self.updateMapWidget()
 
 
 	def updateMapWidget(self):

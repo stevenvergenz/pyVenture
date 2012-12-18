@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>pyVenture Map Builder</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -82,15 +82,31 @@
             </property>
             <item>
              <widget class="QPushButton" name="pushNewItem">
+              <property name="toolTip">
+               <string>New Sibling</string>
+              </property>
               <property name="text">
-               <string>+Item</string>
+               <string/>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushNewChild">
+              <property name="toolTip">
+               <string>New Child</string>
+              </property>
               <property name="text">
-               <string>+Child</string>
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="pushDeleteItem">
+              <property name="toolTip">
+               <string>Delete</string>
+              </property>
+              <property name="text">
+               <string/>
               </property>
              </widget>
             </item>
@@ -109,23 +125,21 @@
             </item>
             <item>
              <widget class="QPushButton" name="pushMoveUp">
+              <property name="toolTip">
+               <string>Move Up</string>
+              </property>
               <property name="text">
                <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/trolltech/styles/commonstyle/images/up-32.png</normaloff>:/trolltech/styles/commonstyle/images/up-32.png</iconset>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="pushMoveDown">
+              <property name="toolTip">
+               <string>Move Down</string>
+              </property>
               <property name="text">
                <string/>
-              </property>
-              <property name="icon">
-               <iconset>
-                <normaloff>:/trolltech/styles/commonstyle/images/down-32.png</normaloff>:/trolltech/styles/commonstyle/images/down-32.png</iconset>
               </property>
              </widget>
             </item>
@@ -201,7 +215,24 @@
     <addaction name="separator"/>
     <addaction name="actionE_xit"/>
    </widget>
+   <widget class="QMenu" name="menu_Player">
+    <property name="title">
+     <string>&amp;Player</string>
+    </property>
+    <addaction name="actionSet_spawnpoint_here"/>
+    <addaction name="actionSet_location_here"/>
+    <addaction name="actionManage_inventory"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionAbout_pyVenture"/>
+    <addaction name="actionAbout_Qt"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Player"/>
+   <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QToolBar" name="toolBar">
@@ -219,28 +250,16 @@
    </attribute>
   </widget>
   <action name="actionNew">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/trolltech/styles/commonstyle/images/file-32.png</normaloff>:/trolltech/styles/commonstyle/images/file-32.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;New...</string>
    </property>
   </action>
   <action name="actionOpen">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/trolltech/styles/commonstyle/images/diropen-32.png</normaloff>:/trolltech/styles/commonstyle/images/diropen-32.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Open...</string>
    </property>
   </action>
   <action name="actionSave">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/trolltech/styles/commonstyle/images/standardbutton-save-32.png</normaloff>:/trolltech/styles/commonstyle/images/standardbutton-save-32.png</iconset>
-   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -253,6 +272,31 @@
   <action name="actionE_xit">
    <property name="text">
     <string>E&amp;xit</string>
+   </property>
+  </action>
+  <action name="actionSet_spawnpoint_here">
+   <property name="text">
+    <string>Set &amp;spawnpoint here</string>
+   </property>
+  </action>
+  <action name="actionSet_location_here">
+   <property name="text">
+    <string>Set &amp;location here</string>
+   </property>
+  </action>
+  <action name="actionManage_inventory">
+   <property name="text">
+    <string>Manage &amp;inventory...</string>
+   </property>
+  </action>
+  <action name="actionAbout_pyVenture">
+   <property name="text">
+    <string>About &amp;pyVenture...</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt...</string>
    </property>
   </action>
  </widget>
