@@ -308,7 +308,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 	def updateButtonAvailability(self):
 
 		active = {'newSibling': True, 'newChild': False, 'delete': False, 'moveUp': False, 'moveDown': False}
+		hierarchy = ['area','feature','action','event']
 
+		# determine selection status
 		items = self.hierarchyTree.selectedItems()
 		item = items[0] if len(items)>0 else None
 		if item is None:
@@ -321,6 +323,14 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			index = self.hierarchyTree.indexOfTopLevelItem(item)
 			maxIndex = self.hierarchyTree.topLevelItemCount()-1
 
+		# test depth
+		depth = 0
+		temp = item.parent()
+		while temp is not None:
+			depth += 1
+			temp = temp.parent()
+
+		# determine button state
 		if len(items) == 0:
 			# default state
 			pass
@@ -334,9 +344,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			if index >= 0 and index < maxIndex:
 				active['moveDown'] = True
 
+		# set button status
 		self.pushNewSibling.setDisabled( not active['newSibling'] )
+		self.pushNewSibling.setStatusTip( 'Add a new {0} after the selected {0}.'.format(hierarchy[depth]) )
 		self.pushNewChild.setDisabled( not active['newChild'] )
+		self.pushNewChild.setStatusTip( 'Add a new {0} to the selected {1}.'.format(hierarchy[depth+1],hierarchy[depth]) )
 		self.pushDeleteItem.setDisabled( not active['delete'] )
+		self.pushDeleteItem.setStatusTip( 'Delete the selected {0} from the world.'.format(hierarchy[depth]) )
 		self.pushMoveUp.setDisabled( not active['moveUp'] )
 		self.pushMoveDown.setDisabled( not active['moveDown'] )
 

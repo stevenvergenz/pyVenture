@@ -22,8 +22,17 @@
       </property>
       <widget class="QGraphicsView" name="graphicsView"/>
       <widget class="QSplitter" name="propertySplitter">
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="midLineWidth">
+        <number>0</number>
+       </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
+       </property>
+       <property name="handleWidth">
+        <number>3</number>
        </property>
        <widget class="QFrame" name="frame">
         <property name="frameShape">
@@ -85,6 +94,9 @@
               <property name="toolTip">
                <string>New Sibling</string>
               </property>
+              <property name="statusTip">
+               <string>Add a new area to the world.</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -95,6 +107,9 @@
               <property name="toolTip">
                <string>New Child</string>
               </property>
+              <property name="statusTip">
+               <string>Add a new feature to the selected area.</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -104,6 +119,9 @@
              <widget class="QPushButton" name="pushDeleteItem">
               <property name="toolTip">
                <string>Delete</string>
+              </property>
+              <property name="statusTip">
+               <string>Remove the selected item from the world.</string>
               </property>
               <property name="text">
                <string/>
@@ -128,6 +146,9 @@
               <property name="toolTip">
                <string>Move Up</string>
               </property>
+              <property name="statusTip">
+               <string>Move the selected item up relative to its siblings.</string>
+              </property>
               <property name="text">
                <string/>
               </property>
@@ -137,6 +158,9 @@
              <widget class="QPushButton" name="pushMoveDown">
               <property name="toolTip">
                <string>Move Down</string>
+              </property>
+              <property name="statusTip">
+               <string>Move the selected item down relative to its siblings.</string>
               </property>
               <property name="text">
                <string/>

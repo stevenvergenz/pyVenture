@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Tue Dec 18 16:20:24 2012
+# Created: Wed Dec 19 13:07:41 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -28,7 +28,10 @@ class Ui_MainWindow(object):
         self.graphicsView = QtGui.QGraphicsView(self.mainSplitter)
         self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
         self.propertySplitter = QtGui.QSplitter(self.mainSplitter)
+        self.propertySplitter.setFrameShape(QtGui.QFrame.NoFrame)
+        self.propertySplitter.setMidLineWidth(0)
         self.propertySplitter.setOrientation(QtCore.Qt.Vertical)
+        self.propertySplitter.setHandleWidth(3)
         self.propertySplitter.setObjectName(_fromUtf8("propertySplitter"))
         self.frame = QtGui.QFrame(self.propertySplitter)
         self.frame.setFrameShape(QtGui.QFrame.NoFrame)
@@ -162,10 +165,15 @@ class Ui_MainWindow(object):
         self.hierarchyTree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Name", None, QtGui.QApplication.UnicodeUTF8))
         self.hierarchyTree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
         self.pushNewSibling.setToolTip(QtGui.QApplication.translate("MainWindow", "New Sibling", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushNewSibling.setStatusTip(QtGui.QApplication.translate("MainWindow", "Add a new area to the world.", None, QtGui.QApplication.UnicodeUTF8))
         self.pushNewChild.setToolTip(QtGui.QApplication.translate("MainWindow", "New Child", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushNewChild.setStatusTip(QtGui.QApplication.translate("MainWindow", "Add a new feature to the selected area.", None, QtGui.QApplication.UnicodeUTF8))
         self.pushDeleteItem.setToolTip(QtGui.QApplication.translate("MainWindow", "Delete", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushDeleteItem.setStatusTip(QtGui.QApplication.translate("MainWindow", "Remove the selected item from the world.", None, QtGui.QApplication.UnicodeUTF8))
         self.pushMoveUp.setToolTip(QtGui.QApplication.translate("MainWindow", "Move Up", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushMoveUp.setStatusTip(QtGui.QApplication.translate("MainWindow", "Move the selected item up relative to its siblings.", None, QtGui.QApplication.UnicodeUTF8))
         self.pushMoveDown.setToolTip(QtGui.QApplication.translate("MainWindow", "Move Down", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushMoveDown.setStatusTip(QtGui.QApplication.translate("MainWindow", "Move the selected item down relative to its siblings.", None, QtGui.QApplication.UnicodeUTF8))
         item = self.propertyTable.horizontalHeaderItem(0)
         item.setText(QtGui.QApplication.translate("MainWindow", "Property", None, QtGui.QApplication.UnicodeUTF8))
         item = self.propertyTable.horizontalHeaderItem(1)
