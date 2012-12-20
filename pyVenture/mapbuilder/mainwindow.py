@@ -289,9 +289,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		else:
 
-			self.propertyTable.setRowCount( len(treeItem.ventureObject.properties) )
+			self.propertyTable.setRowCount( len(treeItem.ventureObject.properties)+1 )
 
-			i = 0
+			# construct the event type combo box
+			comboBox = QtGui.QComboBox()
+			currentType = 0
+			for t in events.itersubclasses( events.Event ):
+				comboBox.addItem( t.__name__ )
+				if t.__name__ == treeItem.ventureObject.type:
+					currentType = len(comboBox)-1
+
+			comboBox.setCurrentIndex(currentType)
+			comboBox.currentIndexChanged[str].connect( self.editEventType )
+			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('type') )
+			self.propertyTable.setCellWidget( 0,1, comboBox )
+
+			i = 1
 			for name, value in treeItem.ventureObject.properties.items():
 				self.propertyTable.setItem( i,0, QtGui.QTableWidgetItem(name) )
 				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
@@ -436,6 +449,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			newTreeItem = QtGui.QTreeWidgetItem(item, [newVentureObject.type, 'Event'])
 			newTreeItem.ventureObject = newVentureObject
 
+		self.hierarchyTree.expandItem(item)
+
 	def deleteItem(self):
 
 		pass
@@ -454,17 +469,50 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 	def editProperty(self, row, column):
 
 		if( column != 1 ): return
-
+		
 		key = self.propertyTable.item(row,0).text()
 		value = str(self.propertyTable.item(row,column).text())
-		setattr( self.propertyTable.ventureObject, str(key), value)
+		if not isinstance(self.propertyTable.ventureObject, events.Event):
+			setattr( self.propertyTable.ventureObject, str(key), value)
 
 		if isinstance(self.propertyTable.ventureObject, types.Area) and key == 'name':
 			self.world.updateArea(self.propertyTable.ventureObject)
 			self.hierarchyTree.selectedItems()[0].setText(0, self.propertyTable.ventureObject.id)
 			self.propertyTable.item(0,1).setText( self.propertyTable.ventureObject.id )
 			self.updateMapWidget()
+		
+		elif isinstance(self.propertyTable.ventureObject, types.Feature) and key == 'name':
+			self.hierarchyTree.selectedItems()[0].setText(0, value)
+		
+		elif isinstance(self.propertyTable.ventureObject, types.Action) and key == 'description':
+			self.hierarchyTree.selectedItems()[0].setText(0, value)
+		
+		elif isinstance(self.propertyTable.ventureObject, events.Event) and key == 'destination':
+			self.propertyTable.ventureObject.properties['destination'] = value
+			self.updateMapWidget()
 
 		#print 'The value of',key,'is now',value
 
+	def editEventType(self, newType):
+
+		oldEvent = self.propertyTable.ventureObject
+		newEvent = None
+
+		for t in events.itersubclasses(events.Event):
+			if t.__name__ == newType:
+				newEvent = t()
+		
+		if newEvent is None:
+			return
+		
+		# replace old class with new class
+		newEvent.parentAction = oldEvent.parentAction
+		index = oldEvent.parentAction.events.index(oldEvent)
+		oldEvent.parentAction.events[index] = newEvent
+		
+		self.propertyTable.ventureObject = newEvent
+		self.hierarchyTree.selectedItems()[0].ventureObject = newEvent
+		self.hierarchyTree.selectedItems()[0].setText(0, newEvent.type)
+		
+		self.updatePropertyTable()
 

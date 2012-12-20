@@ -35,6 +35,7 @@ class Event(Serial):
 
 	def __init__(self, properties):
 		self.properties = properties
+		self.parentAction = None
 	
 	@abc.abstractmethod
 	def __call__(self, actor, action):

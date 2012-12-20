@@ -43,7 +43,9 @@ class Serial:
 		
 			obj = types.Action(dump['description'])
 			for event in dump['events']:
-				obj.events.append( events.Event.deserialize(event, world) )
+				newEvent = events.Event.deserialize(event,world)
+				newEvent.parentAction = obj
+				obj.events.append( newEvent )
 				
 		else:
 			print 'Problem class:', cls.__name__
