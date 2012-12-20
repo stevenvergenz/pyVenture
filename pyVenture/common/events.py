@@ -63,8 +63,11 @@ class Event(Serial):
 
 class TextEvent(Event):
 
-	def __init__(self, properties):
-		Event.__init__(self, properties)
+	def __init__(self, properties=None):
+		if properties is None:
+			Event.__init__(self, {'text': ''})
+		else:
+			Event.__init__(self, properties)
 
 	def __call__(self, actor, action):
 		print self.properties['text']
@@ -74,8 +77,11 @@ class TextEvent(Event):
 
 class PlayerMoveEvent(Event):
 
-	def __init__(self, properties):
-		Event.__init__(self, properties)
+	def __init__(self, properties=None):
+		if properties is None:
+			Event.__init__(self, {'destination': ''})
+		else:
+			Event.__init__(self, properties)
 
 	def __call__(self, actor, action):
 		actor.currentArea = action.parentFeature.parentArea.parentWorld.areas[ self.properties['destination'] ]

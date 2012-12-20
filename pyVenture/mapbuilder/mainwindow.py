@@ -63,6 +63,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.hierarchyTree.itemSelectionChanged.connect( self.updatePropertyTable )
 		self.hierarchyTree.itemSelectionChanged.connect( self.updateButtonAvailability )
 		self.propertyTable.cellChanged.connect( self.editProperty )
+		self.updateButtonAvailability()
 
 		# connect object tree manipulation buttons
 		self.pushNewSibling.clicked.connect( self.addSibling )
@@ -308,7 +309,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 	def updateButtonAvailability(self):
 
 		active = {'newSibling': True, 'newChild': False, 'delete': False, 'moveUp': False, 'moveDown': False}
-		hierarchy = ['area','feature','action','event']
+		hierarchy = ['area','feature','action','event', 'nothing']
 
 		# determine selection status
 		items = self.hierarchyTree.selectedItems()
@@ -325,7 +326,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		# test depth
 		depth = 0
-		temp = item.parent()
+		temp = item.parent() if item is not None else None
 		while temp is not None:
 			depth += 1
 			temp = temp.parent()
@@ -364,24 +365,76 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		if item is None:
 			newVentureObj = types.Area('New area', 'You enter an unremarkable room.')
+			newVentureObj.parentWorld = self.world
 			self.world.addArea(newVentureObj)
 			newTreeItem = QtGui.QTreeWidgetItem(self.hierarchyTree, [newVentureObj.id, 'Area'])
 			newTreeItem.ventureObject = newVentureObj
 			self.updateMapWidget()
 
 		elif isinstance(item.ventureObject, types.Area):
-			newVentureObj = types.Area('New area', 'You enter an unremarkable room.')
-			self.world.addArea(newVentureObj)
+			newVentureObject = types.Area('New area', 'You enter an unremarkable room.')
+			newVentureObject.parentWorld = self.world
+			self.world.addArea(newVentureObject)
 			newTreeItem = QtGui.QTreeWidgetItem(self.hierarchyTree, item)
-			newTreeItem.ventureObject = newVentureObj
-			newTreeItem.setText(0, newVentureObj.id)
+			newTreeItem.ventureObject = newVentureObject
+			newTreeItem.setText(0, newVentureObject.id)
 			newTreeItem.setText(1, 'Area')
+
+		elif isinstance(item.ventureObject, types.Feature):
+			newVentureObject = types.Feature('unknown object', 'A vague and undefined object')
+			newVentureObject.parentArea = item.ventureObject.parentArea
+			newVentureObject.parentArea.features.append(newVentureObject)
+			newTreeItem = QtGui.QTreeWidgetItem(item.parent(), item)
+			newTreeItem.ventureObject = newVentureObject
+			newTreeItem.setText(0, newVentureObject.name)
+			newTreeItem.setText(1, 'Feature')
+		
+		elif isinstance(item.ventureObject, types.Action):
+			newVentureObject = types.Action('Do something')
+			newVentureObject.parentFeature = item.ventureObject.parentFeature
+			newVentureObject.parentFeature.actions.append(newVentureObject)
+			newTreeItem = QtGui.QTreeWidgetItem(item.parent(), item)
+			newTreeItem.ventureObject = newVentureObject
+			newTreeItem.setText(0, newVentureObject.description)
+			newTreeItem.setText(1, 'Action')
+
+		elif isinstance(item.ventureObject, events.Event):
+			newVentureObject = events.TextEvent({'text': 'Nothing happens'})
+			newVentureObject.parentAction = item.ventureObject.parentAction
+			newVentureObject.parentAction.events.append(newVentureObject)
+			newTreeItem = QtGui.QTreeWidgetItem(item.parent(), item)
+			newTreeItem.ventureObject = newVentureObject
+			newTreeItem.setText(0, newVentureObject.type)
+			newTreeItem.setText(1, 'Event')
 
 
 	def addChild(self):
 
-		treeItem = self.hierarchyTree.selectedItems()[0]
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			return
 
+		if isinstance(item.ventureObject, types.Area):
+			newVentureObject = types.Feature('unknown object', 'A vague and undefined object')
+			newVentureObject.parentArea = item.ventureObject
+			item.ventureObject.features.append(newVentureObject)
+			newTreeItem = QtGui.QTreeWidgetItem(item, [newVentureObject.name, 'Feature'])
+			newTreeItem.ventureObject = newVentureObject
+
+		elif isinstance(item.ventureObject, types.Feature):
+			newVentureObject = types.Action('Do something')
+			newVentureObject.parentFeature = item.ventureObject
+			item.ventureObject.actions.append(newVentureObject)
+			newTreeItem = QtGui.QTreeWidgetItem(item, [newVentureObject.description, 'Action'])
+			newTreeItem.ventureObject = newVentureObject
+
+		elif isinstance(item.ventureObject, types.Action):
+			newVentureObject = events.TextEvent({'text': 'Nothing happens'})
+			newVentureObject.parentAction = item.ventureObject
+			item.ventureObject.events.append(newVentureObject)
+			newTreeItem = QtGui.QTreeWidgetItem(item, [newVentureObject.type, 'Event'])
+			newTreeItem.ventureObject = newVentureObject
 
 	def deleteItem(self):
 
