@@ -34,8 +34,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.pushNewChild.setIcon(style.standardIcon(QtGui.QStyle.SP_FileIcon))
 
 		self.filename = ''
-		self.world = types.World()
-		self.oldWorld = types.World()
+		self.world = None
+		self.oldWorld = None
 
 		self.graphicsScene = QtGui.QGraphicsScene()
 		self.graphicsView.setScene( self.graphicsScene )
@@ -75,8 +75,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.pushDeleteItem.clicked.connect( self.deleteItem )
 		self.pushMoveUp.clicked.connect( self.moveItemUp )
 		self.pushMoveDown.clicked.connect( self.moveItemDown )
-
+		
 		#self.load('sample.pvm')
+		self.newFileDialog()
 
 
 	#################################################
@@ -505,7 +506,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 
 	def moveItemUp(self):
-		
+
 		pass
 
 	def moveItemDown(self):
@@ -521,6 +522,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		value = str(self.propertyTable.item(row,column).text())
 		if not isinstance(self.propertyTable.ventureObject, events.Event):
 			setattr( self.propertyTable.ventureObject, str(key), value)
+		else:
+			self.propertyTable.ventureObject.properties[str(key)] = value
 
 		if isinstance(self.propertyTable.ventureObject, types.Area) and key == 'name':
 			self.world.updateArea(self.propertyTable.ventureObject)
@@ -535,7 +538,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			self.hierarchyTree.selectedItems()[0].setText(0, value)
 		
 		elif isinstance(self.propertyTable.ventureObject, events.PlayerMoveEvent) and key == 'destination':
-			self.propertyTable.ventureObject.properties['destination'] = value
 			self.updateMapWidget()
 
 		#print 'The value of',key,'is now',value
