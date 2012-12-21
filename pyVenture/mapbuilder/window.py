@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Thu Dec 20 16:25:11 2012
+# Created: Fri Dec 21 08:58:27 2012
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -114,6 +114,8 @@ class Ui_MainWindow(object):
         self.menu_Player.setObjectName(_fromUtf8("menu_Player"))
         self.menu_Help = QtGui.QMenu(self.menubar)
         self.menu_Help.setObjectName(_fromUtf8("menu_Help"))
+        self.menu_Tools = QtGui.QMenu(self.menubar)
+        self.menu_Tools.setObjectName(_fromUtf8("menu_Tools"))
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
@@ -142,6 +144,8 @@ class Ui_MainWindow(object):
         self.actionAbout_pyVenture.setObjectName(_fromUtf8("actionAbout_pyVenture"))
         self.actionAbout_Qt = QtGui.QAction(MainWindow)
         self.actionAbout_Qt.setObjectName(_fromUtf8("actionAbout_Qt"))
+        self.actionView_JSON = QtGui.QAction(MainWindow)
+        self.actionView_JSON.setObjectName(_fromUtf8("actionView_JSON"))
         self.menu_File.addAction(self.actionNew)
         self.menu_File.addAction(self.actionOpen)
         self.menu_File.addAction(self.actionSave)
@@ -153,8 +157,10 @@ class Ui_MainWindow(object):
         self.menu_Player.addAction(self.actionManage_inventory)
         self.menu_Help.addAction(self.actionAbout_pyVenture)
         self.menu_Help.addAction(self.actionAbout_Qt)
+        self.menu_Tools.addAction(self.actionView_JSON)
         self.menubar.addAction(self.menu_File.menuAction())
         self.menubar.addAction(self.menu_Player.menuAction())
+        self.menubar.addAction(self.menu_Tools.menuAction())
         self.menubar.addAction(self.menu_Help.menuAction())
 
         self.retranslateUi(MainWindow)
@@ -181,6 +187,7 @@ class Ui_MainWindow(object):
         self.menu_File.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Player.setTitle(QtGui.QApplication.translate("MainWindow", "&Player", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Help.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
+        self.menu_Tools.setTitle(QtGui.QApplication.translate("MainWindow", "&Tools", None, QtGui.QApplication.UnicodeUTF8))
         self.toolBar.setWindowTitle(QtGui.QApplication.translate("MainWindow", "toolBar", None, QtGui.QApplication.UnicodeUTF8))
         self.actionNew.setText(QtGui.QApplication.translate("MainWindow", "&New...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionOpen.setText(QtGui.QApplication.translate("MainWindow", "&Open...", None, QtGui.QApplication.UnicodeUTF8))
@@ -193,4 +200,5 @@ class Ui_MainWindow(object):
         self.actionManage_inventory.setText(QtGui.QApplication.translate("MainWindow", "Manage &inventory...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_pyVenture.setText(QtGui.QApplication.translate("MainWindow", "About &pyVenture...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_Qt.setText(QtGui.QApplication.translate("MainWindow", "About Qt...", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionView_JSON.setText(QtGui.QApplication.translate("MainWindow", "View &JSON...", None, QtGui.QApplication.UnicodeUTF8))
 

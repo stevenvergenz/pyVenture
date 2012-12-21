@@ -20,6 +20,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		QtGui.QMainWindow.__init__(self)
 		self.setupUi(self)
 		self.mainSplitter.setSizes([400,200])
+		self.jsonViewer = None
 
 		# set icons
 		style = QtGui.QCommonStyle()
@@ -54,6 +55,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		# connect Player menu items
 
+
+		# connect Tools menu items
+		self.actionView_JSON.triggered.connect( self.viewJSON )
 
 		# connect Help menu items
 		def aboutQt(): QtGui.QMessageBox.aboutQt(self)
@@ -171,6 +175,16 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			self.filename = str(filename)
 			self.saveFileDialog()
 
+	def viewJSON(self):
+
+		if self.jsonViewer is None:
+			self.jsonViewer = QtGui.QTextEdit()
+			self.jsonViewer.setReadOnly(True)
+			self.jsonViewer.setGeometry( self.x(), self.y(), 500,600 )
+
+		self.jsonViewer.setText( json.dumps(self.world.serialize(), indent=4) )
+		self.jsonViewer.show()
+	
 
 	########################################################
 	### Object browser handling

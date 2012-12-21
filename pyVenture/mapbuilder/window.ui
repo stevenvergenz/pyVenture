@@ -254,8 +254,15 @@
     <addaction name="actionAbout_pyVenture"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
+   <widget class="QMenu" name="menu_Tools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionView_JSON"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Player"/>
+   <addaction name="menu_Tools"/>
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -324,6 +331,11 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt...</string>
+   </property>
+  </action>
+  <action name="actionView_JSON">
+   <property name="text">
+    <string>View &amp;JSON...</string>
    </property>
   </action>
  </widget>
