@@ -1,5 +1,6 @@
 import abc				
 from serial import Serial
+import random
 
 def itersubclasses(cls, _seen=None):
 	"""
@@ -48,6 +49,7 @@ class Event(Serial):
 		for subclass in itersubclasses(Event):
 			if subclass.__name__ == dump['type']:
 				del dump['type']
+				newEvent = subclass(dump)
 				return subclass(dump)
 		
 	def serialize(self):
@@ -80,7 +82,9 @@ class PlayerMoveEvent(Event):
 
 	def __init__(self, properties=None):
 		if properties is None:
-			Event.__init__(self, {'destination': ''})
+			r = random.Random()
+			r.seed()
+			Event.__init__(self, {'destination': str(r.randint(1,999999))})
 		else:
 			Event.__init__(self, properties)
 

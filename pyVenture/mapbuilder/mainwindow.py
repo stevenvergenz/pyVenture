@@ -462,18 +462,45 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			item.ventureObject.events.append(newVentureObject)
 			newTreeItem = QtGui.QTreeWidgetItem(item, [newVentureObject.type, 'Event'])
 			newTreeItem.ventureObject = newVentureObject
-
+			
 		self.hierarchyTree.expandItem(item)
 
 	def deleteItem(self):
 
-		pass
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			return
+		
+		parent = item.parent()
+		if item.childCount() != 0:
+			result = QtGui.QMessageBox.warning(self, 'Delete branch', 'The item you are trying to delete has children. Are you sure you want to delete this item and all its descendants?',
+				QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+			if result == QtGui.QMessageBox.No: return
+
+		if isinstance(item.ventureObject, types.Area):
+			del(self.world.areas[item.ventureObject.id])
+			index = self.hierarchyTree.indexFromItem( item ).row()
+			self.hierarchyTree.takeTopLevelItem( index )
+		
+		elif isinstance(item.ventureObject, types.Feature):
+			item.ventureObject.parentArea.features.remove( item.ventureObject )
+			parent.removeChild( item )
+
+		elif isinstance(item.ventureObject, types.Action):
+			item.ventureObject.parentFeature.actions.remove( item.ventureObject )
+			parent.removeChild( item )
+
+		elif isinstance(item.ventureObject, events.Event):
+			item.ventureObject.parentAction.events.remove( item.ventureObject )
+			parent.removeChild( item )
+
+		self.updateMapWidget()
 
 
 	def moveItemUp(self):
-
+		
 		pass
-
 
 	def moveItemDown(self):
 
