@@ -223,7 +223,7 @@ class Player(Serial):
 	
 		dump = {}
 		dump['name'] = self.name
-		dump['currentArea'] = self.currentArea.id
+		dump['currentArea'] = self.currentArea.id if self.currentArea is not None else ''
 		dump['inventory'] = []
 		for i in self.inventory:
 			dump['inventory'].append(i)
