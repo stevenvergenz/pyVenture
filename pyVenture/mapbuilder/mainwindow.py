@@ -224,13 +224,22 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 	def updateMapWidget(self):
 
 		graph = pydot.Dot()
-
+		graph.set_node_defaults(color = 'red', fontcolor = 'red', label = '\<orphan\>')
+		graph.set('overlap', 'prism')
+		
 		# build adjacency graph from world
 		for area in self.world.areas.values():
 		
 			# create node for each room
 			node = pydot.Node(area.id)
 			node.set( 'label', area.name )
+			if area.id == self.world.player.currentArea:
+				node.set( 'color', 'blue' )
+				node.set( 'fontcolor', 'blue' )
+			else:
+				node.set( 'color', 'black' )
+				node.set( 'fontcolor', 'black' )
+
 			graph.add_node(node)
 
 			# link to adjacent rooms
@@ -268,7 +277,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		
 		treeItem = self.hierarchyTree.selectedItems()[0]
 		self.propertyTable.ventureObject = treeItem.ventureObject
-
+		self.propertyTable.removeCellWidget(0,1)
 
 		if treeItem.text(1) == 'Area':
 
@@ -305,18 +314,15 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 			self.propertyTable.setRowCount( len(treeItem.ventureObject.properties)+1 )
 
-			# construct the event type combo box
-			comboBox = QtGui.QComboBox()
-			currentType = 0
+			comboEvents = QtGui.QComboBox()
 			for t in events.itersubclasses( events.Event ):
-				comboBox.addItem( t.__name__ )
-				if t.__name__ == treeItem.ventureObject.type:
-					currentType = len(comboBox)-1
+				comboEvents.addItem( t.__name__ )
+			index = comboEvents.findText( type(treeItem.ventureObject).__name__ )
+			comboEvents.setCurrentIndex( index )
+			comboEvents.currentIndexChanged[str].connect( self.editEventType )
 
-			comboBox.setCurrentIndex(currentType)
-			comboBox.currentIndexChanged[str].connect( self.editEventType )
 			self.propertyTable.setItem( 0,0, QtGui.QTableWidgetItem('type') )
-			self.propertyTable.setCellWidget( 0,1, comboBox )
+			self.propertyTable.setCellWidget( 0,1, comboEvents )
 
 			i = 1
 			for name, value in treeItem.ventureObject.properties.items():
@@ -528,7 +534,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		elif isinstance(self.propertyTable.ventureObject, types.Action) and key == 'description':
 			self.hierarchyTree.selectedItems()[0].setText(0, value)
 		
-		elif isinstance(self.propertyTable.ventureObject, events.Event) and key == 'destination':
+		elif isinstance(self.propertyTable.ventureObject, events.PlayerMoveEvent) and key == 'destination':
 			self.propertyTable.ventureObject.properties['destination'] = value
 			self.updateMapWidget()
 
