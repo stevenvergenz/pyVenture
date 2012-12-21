@@ -97,6 +97,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			elif result == QtGui.QMessageBox.Cancel:
 				return
 
+		self.filename = ''
 		self.oldWorld = types.World()
 		self.world = types.World()
 		self.hierarchyTree.clear()
