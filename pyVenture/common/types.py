@@ -38,7 +38,7 @@ class World(Serial):
 	def _generateId(self, area):
 
 		i = 1
-		while area.name + ' ' + str(i) in self.areas.keys():
+		while area.name + ' ' + str(i) in self.areaLookup.keys():
 			i += 1
 		return area.name + ' ' + str(i)
 		
