@@ -93,3 +93,12 @@ class PlayerMoveEvent(Event):
 # end class PlayerMoveEvent
 
 
+def gameHelp():
+        while(True):
+                print "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+                print "quit or q to exit. non-case sensitive"
+                print "[ 1. Location ] you would type '1' and enter to go to that location"
+                print "=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+                retval = raw_input('Press enter to continue game...')
+                break
+# end Help function

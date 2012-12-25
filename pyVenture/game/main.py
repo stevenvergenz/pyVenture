@@ -1,5 +1,5 @@
 from common.types import World, Player, Area, Feature, Action
-from common.events import PlayerMoveEvent
+from common.events import PlayerMoveEvent, gameHelp
 import json
 
 def buildWorld():
@@ -31,25 +31,18 @@ def main():
 				print '{0}. {1}'.format(len(actionlist)+1, action.description)
 				actionlist.append(action)
 				
-		choice = raw_input('> ')
+		choice = raw_input('> ').lower()
 		print
 		
 		if choice == 'quit' or choice == 'q':
 			break
 		elif choice == 'help' or choice == 'h':
-			while(True):
-				
-				print "==============================="
-				print "quit or q to exit from the game."
-				print " [ 1. Location ] you would type '1' and enter to go to that location"
-				print "==============================="
-				retval = raw_input('Press enter to continue the game..')
-				break 
+			gameHelp()
 		else:
 			try:
 				actionlist[int(choice)-1].trigger(player)
 			except ValueError:
-				print "May be base10 entry from mistyping. Try again"
+				print "May be bad entry from mistyping. Try again"
 
 	print "THIS DUMP BELOW IS FOR DEBUG:"
 	print "============================="
