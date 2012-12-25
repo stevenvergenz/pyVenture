@@ -10,7 +10,9 @@ def buildWorld():
 
 
 def main():
-
+	'''
+	I am going to clean up this entire main with some new DEFS and whatnot. It WILL get big so might as well start early
+	'''
 	world = buildWorld()
 	player = world.player
 
@@ -32,13 +34,27 @@ def main():
 		choice = raw_input('> ')
 		print
 		
-		if choice == 'quit':
+		if choice == 'quit' or choice == 'q':
 			break
+		elif choice == 'help' or choice == 'h':
+			while(True):
+				
+				print "==============================="
+				print "quit or q to exit from the game."
+				print " [ 1. Location ] you would type '1' and enter to go to that location"
+				print "==============================="
+				retval = raw_input('Press enter to continue the game..')
+				break 
 		else:
-			actionlist[int(choice)-1].trigger(player)
+			try:
+				actionlist[int(choice)-1].trigger(player)
+			except ValueError:
+				print "May be base10 entry from mistyping. Try again"
 
-
-	print json.dumps( world.serialize() )
+	print "THIS DUMP BELOW IS FOR DEBUG:"
+	print "============================="
+	print json.dumps( world.serialize())
+	print "============================="
 	raw_input('Press Enter to quit...')
 
 
