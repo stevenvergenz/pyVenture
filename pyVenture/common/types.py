@@ -33,7 +33,7 @@ class World(Serial):
 		oldId = area.id
 		area.id = self._generateId(area)
 		self.areaLookup[area.id] = self.areaLookup[oldId]
-		del self.areas[oldId]
+		del self.areaLookup[oldId]
 		
 	def _generateId(self, area):
 
@@ -62,8 +62,11 @@ class World(Serial):
 		if (self.player != None and other.player != None) and self.player != other.player:
 			return False
 
-		for id,area in self.areas.items():
-			if id not in other.areas or area != other.areas[id]:
+		for i,area in enumerate(self.areas):
+			try:
+				if area != other.areas[i]:
+					return False
+			except IndexError:
 				return False
 
 		return True

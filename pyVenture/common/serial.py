@@ -13,21 +13,23 @@ class Serial:
 		if cls == types.Player:
 		
 			obj = types.Player(dump['name'])
-			obj.currentArea = world.areas[dump['currentArea']]
+			obj.currentArea = world.areas[ world.areaLookup[dump['currentArea']] ]
 			
 		elif cls == types.World:
 		
 			obj = types.World()
-			for id, area in dump['areas'].items():
-				obj.areas[id] = types.Area.deserialize(area, obj)
-				obj.areas[id].id = id
-				obj.areas[id].parentWorld = obj
+			for area in dump['areas']:
+				areaObj = types.Area.deserialize(area, obj)
+				areaObj.parentWorld = world
+				obj.areaLookup[area['id']] = len(obj.areas)
+				obj.areas.append(types.Area.deserialize(area, obj))
 				
 			obj.player = types.Player.deserialize( dump['player'], obj )
 		
 		elif cls == types.Area:
 		
 			obj = types.Area(dump['name'], dump['entranceText'])
+			obj.id = dump['id']
 			for feature in dump['features']:
 				obj.features.append( types.Feature.deserialize(feature, world) )
 				obj.features[-1].parentArea = obj

@@ -196,7 +196,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		self.hierarchyTree.clear()
 
-		for key, area in self.world.areas.items():
+		for area in self.world.areas:
 			areaItem = QtGui.QTreeWidgetItem(self.hierarchyTree, [ area.id, 'Area' ])
 			areaItem.ventureObject = area
 			self.hierarchyTree.addTopLevelItem(areaItem)
@@ -229,7 +229,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		graph.set('overlap', 'prism')
 		
 		# build adjacency graph from world
-		for area in self.world.areas.values():
+		for area in self.world.areas:
 		
 			# create node for each room
 			node = pydot.Node(area.id)
@@ -520,24 +520,26 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		
 		key = self.propertyTable.item(row,0).text()
 		value = str(self.propertyTable.item(row,column).text())
-		if not isinstance(self.propertyTable.ventureObject, events.Event):
-			setattr( self.propertyTable.ventureObject, str(key), value)
+		ventureObject = self.propertyTable.ventureObject
+		if not isinstance(ventureObject, events.Event):
+			setattr( ventureObject, str(key), value)
 		else:
-			self.propertyTable.ventureObject.properties[str(key)] = value
+			ventureObject.properties[str(key)] = value
 
-		if isinstance(self.propertyTable.ventureObject, types.Area) and key == 'name':
-			self.world.updateArea(self.propertyTable.ventureObject)
-			self.hierarchyTree.selectedItems()[0].setText(0, self.propertyTable.ventureObject.id)
-			self.propertyTable.item(0,1).setText( self.propertyTable.ventureObject.id )
-			self.updateMapWidget()
+		if isinstance(ventureObject, types.Area) and key == 'name':
+			if not ventureObject.id.startswith(ventureObject.name):
+				self.world.updateArea(ventureObject)
+				self.hierarchyTree.selectedItems()[0].setText(0, ventureObject.id)
+				self.propertyTable.item(0,1).setText( ventureObject.id )
+				self.updateMapWidget()
 		
-		elif isinstance(self.propertyTable.ventureObject, types.Feature) and key == 'name':
+		elif isinstance(ventureObject, types.Feature) and key == 'name':
 			self.hierarchyTree.selectedItems()[0].setText(0, value)
 		
-		elif isinstance(self.propertyTable.ventureObject, types.Action) and key == 'description':
+		elif isinstance(ventureObject, types.Action) and key == 'description':
 			self.hierarchyTree.selectedItems()[0].setText(0, value)
 		
-		elif isinstance(self.propertyTable.ventureObject, events.PlayerMoveEvent) and key == 'destination':
+		elif isinstance(ventureObject, events.PlayerMoveEvent) and key == 'destination':
 			self.updateMapWidget()
 
 		#print 'The value of',key,'is now',value
