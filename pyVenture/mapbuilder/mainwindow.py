@@ -244,17 +244,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			graph.add_node(node)
 
 			# link to adjacent rooms
-			breakFlag = False
+			finalEvent = None
 			for feature in area.features:
 				for action in feature.actions:
 					for event in action.events:
 						if type(event) == events.PlayerMoveEvent:
-							graph.add_edge( pydot.Edge( src=area.id, dst=event.properties['destination'] ) )
-							breakFlag = True
+							finalEvent = pydot.Edge( src=area.id, dst=event.properties['destination'] )
 							break
-					if breakFlag:
-						break
-				
+
+					if finalEvent is not None:
+						graph.add_edge( finalEvent )
+	
+			
 		ps = graph.create_svg(prog='neato')
 		psBytes = QtCore.QByteArray(ps)
 		renderer = QtSvg.QSvgRenderer(psBytes)
