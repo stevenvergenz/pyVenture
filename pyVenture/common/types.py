@@ -5,36 +5,79 @@ class World(Serial):
 
 	def __init__(self):
 
-		self.areas = {}
-		self.player = None
+		self.areas = []
+		self.areaLookup = {}
+		self.player = Player('Hero')
 		
-	def addArea(self, area):
+	def addArea(self, area, index = -1):
 	
 		if not isinstance(area, Area):
 			raise TypeError('Cannot add a non-area to the area list')
-			
+		
+		if self.player.currentArea == None:
+			self.player.currentArea = area
+
 		area.id = self._generateId(area)
 		area.parentWorld = self
-		self.areas[area.id] = area
+		if index >= 0:
+			self.areas.insert(index, area)
+			for key, idx in self.areaLookup.items():
+				if idx >= index: self.areaLookup[key] = idx+1
+			self.areaLookup[area.id] = index
+		else:
+			self.areaLookup[area.id] = len(self.areas)
+			self.areas.append(area)
+
+	def updateArea(self, area):
+
+		oldId = area.id
+		area.id = self._generateId(area)
+		self.areaLookup[area.id] = self.areaLookup[oldId]
+		del self.areaLookup[oldId]
 		
 	def _generateId(self, area):
 
 		i = 1
-		while area.name + ' ' + str(i) in self.areas.keys():
+		while area.name + ' ' + str(i) in self.areaLookup.keys():
 			i += 1
 		return area.name + ' ' + str(i)
 		
 	def serialize(self):
 	
 		dump = {}
-		dump['areas'] = {}
-		for id,area in self.areas.items():
-			dump['areas'][id] = area.serialize()
+		dump['areas'] = []
+		for area in self.areas:
+			dump['areas'].append(area.serialize())
 			
 		dump['player'] = self.player.serialize()
 		
 		return dump		
-	
+
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if (self.player != None and other.player != None) and self.player != other.player:
+			return False
+
+		for i,area in enumerate(self.areas):
+			try:
+				if area != other.areas[i]:
+					return False
+			except IndexError:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
+
 # end class World
 
 
@@ -50,6 +93,7 @@ class Area(Serial):
 	def serialize(self):
 	
 		dump = {}
+		dump['id'] = self.id
 		dump['name'] = self.name
 		dump['entranceText'] = self.entranceText
 		dump['features'] = []
@@ -57,7 +101,30 @@ class Area(Serial):
 			dump['features'].append( feature.serialize() )
 		
 		return dump
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if self.name != other.name or self.entranceText != other.entranceText:
+			return False
+
+		if len(self.features) != len(other.features):
+			return False
+
+		for i in range(len(self.features)):
+			if self.features[i] != other.features[i]:
+				return False
+
+		return True
 		
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
 # end class Area
 
 
@@ -80,6 +147,30 @@ class Feature(Serial):
 			dump['actions'].append( action.serialize() )
 
 		return dump
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if self.name != other.name or self.description != other.description:
+			return False
+
+		if len(self.actions) != len(other.actions):
+			return False
+
+		for i in range(len(self.actions)):
+			if self.actions[i] != other.actions[i]:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
 		
 # end class Feature
 
@@ -108,6 +199,30 @@ class Action(Serial):
 		
 		return dump
 	
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		if self.description != other.description:
+			return False
+
+		if len(self.events) != len(other.events):
+			return False
+
+		for i in range(len(self.events)):
+			if self.events[i] != other.events[i]:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
+
+
 # end class Action
 
 
@@ -122,11 +237,24 @@ class Player(Serial):
 	
 		dump = {}
 		dump['name'] = self.name
-		dump['currentArea'] = self.currentArea.id
+		dump['currentArea'] = self.currentArea.id if self.currentArea is not None else ''
 		dump['inventory'] = []
 		for i in self.inventory:
-			dump['items'].append(i)
+			dump['inventory'].append(i)
 
 		return dump
+
+	def __eq__(self, other):
+
+		if type(self) != type(other):
+			return NotImplemented
+
+		return True
+
+	def __ne__(self, other):
+		result = self.__eq__(other)
+		if result is NotImplemented:
+			return result
+		return not result
 
 # end class Player
