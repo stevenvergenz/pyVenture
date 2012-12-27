@@ -1,6 +1,6 @@
 {
-    "areas": {
-        "Armory 1": {
+    "areas": [
+        {
             "entranceText": "You arrive in a cramped room full of weapon and armor racks.", 
             "features": [
                 {
@@ -23,9 +23,10 @@
                     "name": "northern door"
                 }
             ], 
-            "name": "Armory"
+            "name": "Armory",
+			"id": "Armory 1"
         }, 
-        "Birth Springs 1": {
+        {
             "entranceText": "You awake in a damp dark stone room.", 
             "features": [
                 {
@@ -48,9 +49,10 @@
                     "name": "dark tunnel"
                 }
             ], 
-            "name": "Birth Springs"
+            "name": "Birth Springs",
+			"id": "Birth Springs 1"
         }, 
-        "Courtyard 1": {
+        {
             "entranceText": "You arrive in a brightly lit dirt practice yard with several dummies set up.", 
             "features": [
                 {
@@ -78,7 +80,7 @@
                             "description": "Enter southern door", 
                             "events": [
                                 {
-                                    "text": "You traverse thepassage.", 
+                                    "text": "You traverse the passage.", 
                                     "type": "TextEvent"
                                 }, 
                                 {
@@ -92,9 +94,10 @@
                     "name": "southern door"
                 }
             ], 
-            "name": "Courtyard"
+            "name": "Courtyard",
+			"id": "Courtyard 1"
         }, 
-        "Library 1": {
+        {
             "entranceText": "You arrive in a quiet musty-smelling room with rows and rows of bookshelves.", 
             "features": [
                 {
@@ -117,9 +120,10 @@
                     "name": "eastern door"
                 }
             ], 
-            "name": "Library"
+            "name": "Library",
+			"id": "Library 1"
         }
-    }, 
+    ], 
     "player": {
         "currentArea": "Courtyard 1", 
         "inventory": [], 
