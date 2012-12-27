@@ -48,9 +48,8 @@ class Event(Serial):
 		"""Populates a new event object with the contents of dump."""
 		for subclass in itersubclasses(Event):
 			if subclass.__name__ == dump['type']:
-				del dump['type']
 				newEvent = subclass(dump)
-				return subclass(dump)
+				return newEvent
 		
 	def serialize(self):
 		"""Serializes the event into a dictionary for file dumping."""

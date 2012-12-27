@@ -80,7 +80,7 @@
                             "description": "Enter southern door", 
                             "events": [
                                 {
-                                    "text": "You traverse thepassage.", 
+                                    "text": "You traverse the passage.", 
                                     "type": "TextEvent"
                                 }, 
                                 {
@@ -123,7 +123,7 @@
             "name": "Library",
 			"id": "Library 1"
         }
-    }, 
+    ], 
     "player": {
         "currentArea": "Courtyard 1", 
         "inventory": [], 
