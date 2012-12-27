@@ -130,6 +130,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			except:
 				print 'There was a problem loading', filename
 
+		# test for old file formats
+		if isinstance( dump['areas'], dict ):
+			QtGui.QMessageBox.information(self, 'Old file format',
+				'The file you are trying to load uses an old storage format. You will have to convert it before you can load it.',
+				QtGui.QMessageBox.Ok)
+			return
 
 		# populate tree
 		self.world = types.World.deserialize(dump)
