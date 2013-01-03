@@ -5,10 +5,11 @@ class World(Serial):
 
 	def __init__(self):
 
-		self.areas = {}
+		self.areas = []
+		self.areaLookup = {}
 		self.player = Player('Hero')
 		
-	def addArea(self, area):
+	def addArea(self, area, index = -1):
 	
 		if not isinstance(area, Area):
 			raise TypeError('Cannot add a non-area to the area list')
@@ -18,26 +19,35 @@ class World(Serial):
 
 		area.id = self._generateId(area)
 		area.parentWorld = self
-		self.areas[area.id] = area
+		if index >= 0:
+			self.areas.insert(index, area)
+			for key, idx in self.areaLookup.items():
+				if idx >= index: self.areaLookup[key] = idx+1
+			self.areaLookup[area.id] = index
+		else:
+			self.areaLookup[area.id] = len(self.areas)
+			self.areas.append(area)
 
 	def updateArea(self, area):
 
-		del self.areas[area.id]
-		self.addArea(area)
+		oldId = area.id
+		area.id = self._generateId(area)
+		self.areaLookup[area.id] = self.areaLookup[oldId]
+		del self.areaLookup[oldId]
 		
 	def _generateId(self, area):
 
 		i = 1
-		while area.name + ' ' + str(i) in self.areas.keys():
+		while area.name + ' ' + str(i) in self.areaLookup.keys():
 			i += 1
 		return area.name + ' ' + str(i)
 		
 	def serialize(self):
 	
 		dump = {}
-		dump['areas'] = {}
-		for id,area in self.areas.items():
-			dump['areas'][id] = area.serialize()
+		dump['areas'] = []
+		for area in self.areas:
+			dump['areas'].append(area.serialize())
 			
 		dump['player'] = self.player.serialize()
 		
@@ -52,8 +62,11 @@ class World(Serial):
 		if (self.player != None and other.player != None) and self.player != other.player:
 			return False
 
-		for id,area in self.areas.items():
-			if id not in other.areas or area != other.areas[id]:
+		for i,area in enumerate(self.areas):
+			try:
+				if area != other.areas[i]:
+					return False
+			except IndexError:
 				return False
 
 		return True
@@ -80,6 +93,7 @@ class Area(Serial):
 	def serialize(self):
 	
 		dump = {}
+		dump['id'] = self.id
 		dump['name'] = self.name
 		dump['entranceText'] = self.entranceText
 		dump['features'] = []
