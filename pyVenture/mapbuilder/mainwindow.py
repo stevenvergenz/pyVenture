@@ -254,10 +254,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			finalEvent = None
 			for feature in area.features:
 				for action in feature.actions:
+					finalEvent = None
 					for event in action.events:
 						if type(event) == events.PlayerMoveEvent:
 							finalEvent = pydot.Edge( src=area.id, dst=event.properties['destination'] )
-							break
 
 					if finalEvent is not None:
 						graph.add_edge( finalEvent )
@@ -337,6 +337,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			for name, value in treeItem.ventureObject.properties.items():
 				self.propertyTable.setItem( i,0, QtGui.QTableWidgetItem(name) )
 				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
+				i += 1
 
 
 		# set all cells in col 0 read-only
