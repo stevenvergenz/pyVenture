@@ -12,7 +12,9 @@ def main(world):
 	player = world.player
 
 	while(True):
-	
+
+		print
+		print
 		print player.currentArea.entranceText
 		print 'The area contains:'
 		for feature in player.currentArea.features:

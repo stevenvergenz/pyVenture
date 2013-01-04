@@ -47,7 +47,12 @@ def main():
 
 	# load the main menu
 	menu = buildMenu()
-	launchGame(menu)
+	status = launchGame(menu)
+
+	while status == GameStatus.LoadMap:
+		status = launchGame(world)
+
+	raw_input('Press Enter to exit...')
 
 	#if sys.argv[1] == 'play':
 	#	launchGame()
