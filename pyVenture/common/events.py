@@ -1,6 +1,7 @@
-import abc				
-from serial import Serial
+import abc
 import random
+
+from types import Serial
 
 def itersubclasses(cls, _seen=None):
 	"""
