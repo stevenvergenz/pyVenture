@@ -1,41 +1,14 @@
-from common import types
-from common import events
-import json, gzip, glob
 
-world = None
-player = None
-
-class LoadWorldEvent(events.Event):
-
-	def __init__(self, properties = None):
-		if properties is None:
-			Event.__init__(self, {'filename': ''})
-		else:
-			Event.__init__(self, properties)
+class GameStatus:
+	Error = -1
+	Quit = 0
+	LaunchMapbuilder = 1
+	LoadMap = 2
+	
 
 
-	def __call__(self, actor, action):
-		dump = {}
-		with gzip.open(filename, 'r') if filename[-2:] == 'gz' else open(filename, 'r') as file:
-			try:
-				tempstr = file.read()
-				dump = json.loads(tempstr)
-			except:
-				print 'There was a problem loading', filename
+def main(world):
 
-		# populate tree
-		world = types.World.deserialize(dump)
-		player = world.player
-
-
-def buildWorld():
-
-	pass
-
-
-def main():
-
-	world = buildWorld()
 	player = world.player
 
 	while(True):
@@ -57,14 +30,11 @@ def main():
 		print
 		
 		if choice == 'quit':
-			break
+			return GameStatus.Quit
 		else:
-			actionlist[int(choice)-1].trigger(player)
-
-
-	print json.dumps( world.serialize() )
-	raw_input('Press Enter to quit...')
-
+			status = actionlist[int(choice)-1].trigger(player)
+			if status is not None:
+				return status
 
 
 if __name__ == '__main__':
