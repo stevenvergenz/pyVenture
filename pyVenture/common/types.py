@@ -20,9 +20,9 @@ class Serial:
 			obj = World()
 			for area in dump['areas']:
 				areaObj = Area.deserialize(area, obj)
-				areaObj.parentWorld = world
+				areaObj.parentWorld = obj
 				obj.areaLookup[area['id']] = len(obj.areas)
-				obj.areas.append(Area.deserialize(area, obj))
+				obj.areas.append(areaObj)
 				
 			obj.player = Player.deserialize( dump['player'], obj )
 		
@@ -240,12 +240,14 @@ class Action(Serial):
 		self.parentFeature = None
 		self.events = []
 		if actionText != None:
-			self.events.append( events.TextEvent(actionText) )
+			self.events.append( events.TextEvent({'text':actionText}) )
 		
 	def trigger(self, actor):
 
 		for consequent in self.events:
-			consequent(actor, self)
+			status = consequent(actor, self)
+			if status is not None:
+				return status
 			
 	def serialize(self):
 	

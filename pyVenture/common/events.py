@@ -89,7 +89,8 @@ class PlayerMoveEvent(Event):
 			Event.__init__(self, properties)
 
 	def __call__(self, actor, action):
-		actor.currentArea = action.parentFeature.parentArea.parentWorld.areas[ self.properties['destination'] ]
+		world = action.parentFeature.parentArea.parentWorld
+		actor.currentArea = world.areas[ world.areaLookup[self.properties['destination']] ]
 		
 # end class PlayerMoveEvent
 
