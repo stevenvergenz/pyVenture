@@ -31,12 +31,15 @@ def main(world):
 		choice = raw_input('> ')
 		print
 		
-		if choice == 'quit':
+		if choice == 'quit' or choice == "q":
 			return GameStatus.Quit
 		else:
-			status = actionlist[int(choice)-1].trigger(player)
-			if status is not None:
-				return status
+			try:
+				status = actionlist[int(choice)-1].trigger(player)
+				if status is not None:
+					return status
+			except ValueError:
+				print "Bad type entry, please try again"
 
 
 if __name__ == '__main__':
