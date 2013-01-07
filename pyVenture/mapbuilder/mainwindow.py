@@ -541,6 +541,30 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			item = parent.takeChild( oldIndex )
 			parent.insertChild( oldIndex-1, item )
 
+		if isinstance(item.ventureObject, types.Area):
+			temp = self.world.areas[oldIndex]
+			del self.world.areas[oldIndex]
+			self.world.areas.insert(oldIndex-1, temp)
+			for key,val in self.world.areaLookup.items():
+				if val == oldIndex-1:
+					self.world.areaLookup[key] = val+1
+			self.world.areaLookup[item.ventureObject.id] = oldIndex-1
+
+		elif isinstance(item.ventureObject, types.Feature):
+			temp = item.ventureObject
+			del temp.parentArea.features[oldIndex]
+			temp.parentArea.features.insert(oldIndex-1, temp)
+
+		elif isinstance(item.ventureObject, types.Action):
+			temp = item.ventureObject
+			del temp.parentFeature.actions[oldIndex]
+			temp.parentFeature.actions.insert(oldIndex-1, temp)
+
+		elif isinstance(item.ventureObject, types.Event):
+			temp = item.ventureObject
+			del temp.parentAction.events[oldIndex]
+			temp.parentAction.events.insert(oldIndex-1, temp)
+
 		self.hierarchyTree.setCurrentItem(item)
 
 
