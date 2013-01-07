@@ -570,7 +570,58 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def moveItemDown(self):
 
-		pass
+		# get selection
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			return
+
+		# get index, make sure moveDown is a valid operation
+		parent = item.parent()
+		if parent is None:
+			oldIndex = self.hierarchyTree.indexOfTopLevelItem( item )
+			if oldIndex == self.hierarchyTree.topLevelItemCount()-1:
+				return
+		else:
+			oldIndex = parent.indexOfChild(item)
+			if oldIndex == parent.childCount()-1:
+				return
+
+		# swap tree item for one below it
+		if parent is None:
+			item = self.hierarchyTree.takeTopLevelItem( oldIndex )
+			self.hierarchyTree.insertTopLevelItem( oldIndex+1, item )
+		else:
+			item = parent.takeChild( oldIndex )
+			parent.insertChild( oldIndex+1, item )
+
+		# swap game object item for the one below it
+		if isinstance(item.ventureObject, types.Area):
+			temp = self.world.areas[oldIndex]
+			del self.world.areas[oldIndex]
+			self.world.areas.insert(oldIndex+1, temp)
+			for key,val in self.world.areaLookup.items():
+				if val == oldIndex+1:
+					self.world.areaLookup[key] = val-1
+			self.world.areaLookup[item.ventureObject.id] = oldIndex+1
+
+		elif isinstance(item.ventureObject, types.Feature):
+			temp = item.ventureObject
+			del temp.parentArea.features[oldIndex]
+			temp.parentArea.features.insert(oldIndex+1, temp)
+
+		elif isinstance(item.ventureObject, types.Action):
+			temp = item.ventureObject
+			del temp.parentFeature.actions[oldIndex]
+			temp.parentFeature.actions.insert(oldIndex+1, temp)
+
+		elif isinstance(item.ventureObject, types.Event):
+			temp = item.ventureObject
+			del temp.parentAction.events[oldIndex]
+			temp.parentAction.events.insert(oldIndex+1, temp)
+
+		# update the tree selection
+		self.hierarchyTree.setCurrentItem(item)
 
 
 	def editProperty(self, row, column):
