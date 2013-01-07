@@ -268,10 +268,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		renderer = QtSvg.QSvgRenderer(psBytes)
 		svgItem = QtSvg.QGraphicsSvgItem()
 		svgItem.setSharedRenderer(renderer)
-		self.graphicsScene = QtGui.QGraphicsScene()
 		self.graphicsScene.addItem(svgItem)
 
-		self.graphicsView.setScene(self.graphicsScene)
 		self.graphicsView.setInteractive(True)
 		self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
 	
@@ -495,7 +493,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			if result == QtGui.QMessageBox.No: return
 
 		if isinstance(item.ventureObject, types.Area):
-			del(self.world.areas[item.ventureObject.id])
+			index = self.world.areaLookup[item.ventureObject.id]
+			del self.world.areaLookup[item.ventureObject.id]
+			self.world.areas.remove( index )
+			for areaId, areaIndex in self.world.areaLookup.items():
+				if areaIndex > index:
+					self.world.areaLookup[areaId] = areaIndex-1
+
 			index = self.hierarchyTree.indexFromItem( item ).row()
 			self.hierarchyTree.takeTopLevelItem( index )
 		
@@ -516,7 +520,29 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def moveItemUp(self):
 
-		pass
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			return
+
+		parent = item.parent()
+		if parent is None:
+			oldIndex = self.hierarchyTree.indexOfTopLevelItem( item )
+		else:
+			oldIndex = parent.indexOfChild(item)
+
+		if oldIndex == 0:
+			return
+
+		if parent is None:
+			item = self.hierarchyTree.takeTopLevelItem( oldIndex )
+			self.hierarchyTree.insertTopLevelItem( oldIndex-1, item )
+		else:
+			item = parent.takeChild( oldIndex )
+			parent.insertChild( oldIndex-1, item )
+
+		self.hierarchyTree.setCurrentItem(item)
+
 
 	def moveItemDown(self):
 
