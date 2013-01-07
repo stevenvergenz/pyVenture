@@ -49,7 +49,7 @@ def main():
 	menu = buildMenu()
 	status = launchGame(menu)
 
-	while status == GameStatus.LoadMap:
+	while status not in [GameStatus.Quit, GameStatus.Error]:
 		status = launchGame(world)
 
 	raw_input('Press Enter to exit...')
