@@ -1,5 +1,63 @@
+import abc
+
 import events
-from serial import Serial
+
+class Serial:
+	__metaclass__ = abc.ABCMeta
+	
+	@classmethod
+	def deserialize(cls, dump, world = None):
+	
+		obj = None
+		
+		if cls == Player:
+		
+			obj = Player(dump['name'])
+			obj.currentArea = world.areas[ world.areaLookup[dump['currentArea']] ]
+			
+		elif cls == World:
+		
+			obj = World()
+			for area in dump['areas']:
+				areaObj = Area.deserialize(area, obj)
+				areaObj.parentWorld = obj
+				obj.areaLookup[area['id']] = len(obj.areas)
+				obj.areas.append(areaObj)
+				
+			obj.player = Player.deserialize( dump['player'], obj )
+		
+		elif cls == Area:
+		
+			obj = Area(dump['name'], dump['entranceText'])
+			obj.id = dump['id']
+			for feature in dump['features']:
+				obj.features.append( Feature.deserialize(feature, world) )
+				obj.features[-1].parentArea = obj
+				
+		elif cls == Feature:
+		
+			obj = Feature(dump['name'], dump['description'])
+			for action in dump['actions']:
+				obj.actions.append( Action.deserialize(action, world) )
+				obj.actions[-1].parentFeature = obj
+				
+		elif cls == Action:
+		
+			obj = Action(dump['description'])
+			for event in dump['events']:
+				newEvent = events.Event.deserialize(event,world)
+				newEvent.parentAction = obj
+				obj.events.append( newEvent )
+				
+		else:
+			print 'Problem class:', cls.__name__
+			
+		return obj
+		
+	@abc.abstractmethod
+	def serialize(self):
+		return {}
+
 
 class World(Serial):
 
@@ -182,12 +240,14 @@ class Action(Serial):
 		self.parentFeature = None
 		self.events = []
 		if actionText != None:
-			self.events.append( events.TextEvent(actionText) )
+			self.events.append( events.TextEvent({'text':actionText}) )
 		
 	def trigger(self, actor):
 
 		for consequent in self.events:
-			consequent(actor, self)
+			status = consequent(actor, self)
+			if status is not None:
+				return status
 			
 	def serialize(self):
 	
