@@ -37,7 +37,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.world = None
 		self.oldWorld = None
 
-		self.graphicsScene = QtGui.QGraphicsScene()
+		self.graphicsScene = QtGui.QGraphicsScene( self.graphicsView )
 		self.graphicsView.setScene( self.graphicsScene )
 
 		# connect toolbar buttons
