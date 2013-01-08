@@ -243,7 +243,7 @@
     <property name="title">
      <string>&amp;Player</string>
     </property>
-    <addaction name="actionSet_spawnpoint_here"/>
+    <addaction name="actionSetSpawnpoint"/>
     <addaction name="actionSet_location_here"/>
     <addaction name="actionManage_inventory"/>
    </widget>
@@ -308,9 +308,9 @@
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionSet_spawnpoint_here">
+  <action name="actionSetSpawnpoint">
    <property name="text">
-    <string>Set &amp;spawnpoint here</string>
+    <string>Set &amp;spawn point here</string>
    </property>
   </action>
   <action name="actionSet_location_here">

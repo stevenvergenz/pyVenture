@@ -54,7 +54,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.actionNew.triggered.connect( self.newFileDialog )
 
 		# connect Player menu items
-
+		self.actionSetSpawnpoint.triggered.connect( self.setSpawnPoint )
 
 		# connect Tools menu items
 		self.actionView_JSON.triggered.connect( self.viewJSON )
@@ -192,7 +192,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		self.jsonViewer.setText( json.dumps(self.world.serialize(), indent=4) )
 		self.jsonViewer.show()
-	
+
+	def setSpawnPoint(self):
+
+		try:
+			item = self.hierarchyTree.selectedItems()[0].ventureObject
+		except IndexError:
+			return
+
+		if item is not None and isinstance(item, types.Area):
+			self.world.player.currentArea = item
+			self.updateMapWidget()
+			QtGui.QMessageBox.information(self, 'Spawn updated', 'The player spawn point is now at {0}'.format(item.id) )
+
 
 	########################################################
 	### Object browser handling
