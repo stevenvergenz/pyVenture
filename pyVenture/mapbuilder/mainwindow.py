@@ -241,7 +241,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			# create node for each room
 			node = pydot.Node(area.id)
 			node.set( 'label', area.name )
-			if area.id == self.world.player.currentArea:
+			if area == self.world.player.currentArea:
 				node.set( 'color', 'blue' )
 				node.set( 'fontcolor', 'blue' )
 			else:
@@ -560,7 +560,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			del temp.parentFeature.actions[oldIndex]
 			temp.parentFeature.actions.insert(oldIndex-1, temp)
 
-		elif isinstance(item.ventureObject, types.Event):
+		elif isinstance(item.ventureObject, events.Event):
 			temp = item.ventureObject
 			del temp.parentAction.events[oldIndex]
 			temp.parentAction.events.insert(oldIndex-1, temp)
@@ -615,7 +615,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			del temp.parentFeature.actions[oldIndex]
 			temp.parentFeature.actions.insert(oldIndex+1, temp)
 
-		elif isinstance(item.ventureObject, types.Event):
+		elif isinstance(item.ventureObject, events.Event):
 			temp = item.ventureObject
 			del temp.parentAction.events[oldIndex]
 			temp.parentAction.events.insert(oldIndex+1, temp)

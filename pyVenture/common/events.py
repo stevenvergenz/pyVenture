@@ -49,6 +49,7 @@ class Event(Serial):
 		"""Populates a new event object with the contents of dump."""
 		for subclass in itersubclasses(Event):
 			if subclass.__name__ == dump['type']:
+				del dump['type']
 				newEvent = subclass(dump)
 				return newEvent
 		
