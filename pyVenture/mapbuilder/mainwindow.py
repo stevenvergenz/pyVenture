@@ -1,6 +1,7 @@
 from window import Ui_MainWindow
 from PyQt4 import QtGui, QtCore, QtSvg
 from PyQt4.QtCore import Qt
+from svgsubitem import SvgSubItem
 
 from common import types
 from common import events
@@ -263,7 +264,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			graph.add_node(node)
 
 			# link to adjacent rooms
-			finalEvent = None
 			for feature in area.features:
 				for action in feature.actions:
 					finalEvent = None
@@ -276,16 +276,18 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 	
 			
 		ps = graph.create_svg(prog='neato')
-		psBytes = QtCore.QByteArray(ps)
-		renderer = QtSvg.QSvgRenderer(psBytes)
-		svgItem = QtSvg.QGraphicsSvgItem()
-		svgItem.setSharedRenderer(renderer)
+		#psBytes = QtCore.QByteArray(ps)
+		#renderer = QtSvg.QSvgRenderer(psBytes)
+		#svgItem = QtSvg.QGraphicsSvgItem()
+		#svgItem.setSharedRenderer(renderer)
+		svgItem = SvgSubItem(ps)
 		self.graphicsScene.addItem(svgItem)
 
 		self.graphicsView.setInteractive(True)
-		self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
-	
-
+		#self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
+		print 'Graphics items:'
+		for item in svgItem.childItems():
+			print item
 
 	def updatePropertyTable(self):
 
