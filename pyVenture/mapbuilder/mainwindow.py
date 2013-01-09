@@ -274,7 +274,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 					if finalEvent is not None:
 						graph.add_edge( finalEvent )
 	
-			
+		self.graphicsScene.clear()
 		ps = graph.create_svg(prog='neato')
 		#psBytes = QtCore.QByteArray(ps)
 		#renderer = QtSvg.QSvgRenderer(psBytes)
