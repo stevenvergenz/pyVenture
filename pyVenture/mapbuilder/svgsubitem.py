@@ -1,20 +1,55 @@
 from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsItemGroup, QPolygonF, QColor, QFont
 from PyQt4.QtCore import QString, QRectF, QPointF
 from lxml import etree as ET
+import pydot
+
+from common import types
+from common import events
 
 class SvgSubItem(QGraphicsPolygonItem):
 
-	def __init__(self, svgText):
+	def __init__(self, world):
 
 		QGraphicsPolygonItem.__init__(self)
-		self.generateItemsFromSvg(svgText)
+		self.generateItemsFromWorld(world)
 		
+	def generateItemsFromWorld(self, world):
 
-	def generateItemsFromSvg(self, svgText):
+		graph = pydot.Dot()
+		graph.set_node_defaults(color = 'red', fontcolor = 'red', label = '\<orphan\>')
+		graph.set('overlap', 'prism')
+		
+		# build adjacency graph from world
+		for area in world.areas:
+		
+			# create node for each room
+			node = pydot.Node(area.id)
+			node.set( 'label', area.name )
+			if area == world.player.currentArea:
+				node.set( 'color', 'blue' )
+				node.set( 'fontcolor', 'blue' )
+			else:
+				node.set( 'color', 'black' )
+				node.set( 'fontcolor', 'black' )
+
+			graph.add_node(node)
+
+			# link to adjacent rooms
+			for feature in area.features:
+				for action in feature.actions:
+					finalEvent = None
+					for event in action.events:
+						if type(event) == events.PlayerMoveEvent:
+							finalEvent = pydot.Edge( src=area.id, dst=event.properties['destination'] )
+
+					if finalEvent is not None:
+						graph.add_edge( finalEvent )
+	
+		ps = graph.create_svg(prog='neato')
 
 		# build xml tree
 		ns = {'svg': 'http://www.w3.org/2000/svg'}
-		doc = ET.fromstring(svgText)
+		doc = ET.fromstring(ps)
 
 		# grab the root node properties
 		rootNode = doc.xpath('/svg:svg/svg:g[1]', namespaces=ns)[0]

@@ -244,51 +244,12 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def updateMapWidget(self):
 
-		graph = pydot.Dot()
-		graph.set_node_defaults(color = 'red', fontcolor = 'red', label = '\<orphan\>')
-		graph.set('overlap', 'prism')
-		
-		# build adjacency graph from world
-		for area in self.world.areas:
-		
-			# create node for each room
-			node = pydot.Node(area.id)
-			node.set( 'label', area.name )
-			if area == self.world.player.currentArea:
-				node.set( 'color', 'blue' )
-				node.set( 'fontcolor', 'blue' )
-			else:
-				node.set( 'color', 'black' )
-				node.set( 'fontcolor', 'black' )
-
-			graph.add_node(node)
-
-			# link to adjacent rooms
-			for feature in area.features:
-				for action in feature.actions:
-					finalEvent = None
-					for event in action.events:
-						if type(event) == events.PlayerMoveEvent:
-							finalEvent = pydot.Edge( src=area.id, dst=event.properties['destination'] )
-
-					if finalEvent is not None:
-						graph.add_edge( finalEvent )
-	
 		self.graphicsScene.clear()
-		ps = graph.create_svg(prog='neato')
-		#psBytes = QtCore.QByteArray(ps)
-		#renderer = QtSvg.QSvgRenderer(psBytes)
-		#svgItem = QtSvg.QGraphicsSvgItem()
-		#svgItem.setSharedRenderer(renderer)
-		svgItem = SvgSubItem(ps)
-
+		svgItem = SvgSubItem(self.world)
 		self.graphicsScene.addItem(svgItem)
 
 		self.graphicsView.setInteractive(True)
 		#self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
-		print 'Graphics items:'
-		for item in svgItem.childItems():
-			print item
 
 	def updatePropertyTable(self):
 
