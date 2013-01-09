@@ -281,6 +281,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		#svgItem = QtSvg.QGraphicsSvgItem()
 		#svgItem.setSharedRenderer(renderer)
 		svgItem = SvgSubItem(ps)
+
 		self.graphicsScene.addItem(svgItem)
 
 		self.graphicsView.setInteractive(True)

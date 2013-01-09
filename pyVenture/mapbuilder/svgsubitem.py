@@ -1,4 +1,4 @@
-from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsItemGroup, QPolygonF, QColor
+from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsSimpleTextItem, QGraphicsItemGroup, QPolygonF, QColor, QFont
 from PyQt4.QtCore import QString, QRectF, QPointF
 from lxml import etree as ET
 
@@ -41,18 +41,27 @@ class SvgSubItem(QGraphicsPolygonItem):
 		for xmlNode in rootNode.xpath('./svg:g', namespaces=ns):
 
 			group = QGraphicsItemGroup(self)
+
 			if xmlNode.attrib['class'] == 'node':
 				
 				# get the ellipse info
 				ellipseNode = xmlNode.xpath('./svg:ellipse', namespaces=ns)[0]
 				elProps = { k: float(ellipseNode.attrib[k]) for k in ['cx', 'cy', 'rx', 'ry']}
-				rect = QRectF( elProps['cx']-elProps['rx'], elProps['cy']+elProps['ry'], 2*elProps['rx'], 2*elProps['ry'])
+				rect = QRectF( elProps['cx']-elProps['rx'], elProps['cy']-elProps['ry'], 2*elProps['rx'], 2*elProps['ry'])
 				penColor = QString(ellipseNode.attrib['stroke'])
-				ellipseItem = QGraphicsEllipseItem(rect, self)
+				ellipseItem = QGraphicsEllipseItem(rect, group)
 				if QColor.isValidColor(penColor):
 					ellipseItem.setPen( QColor(penColor) )
 
-				
+				# get the text info
+				textNode = xmlNode.xpath('./svg:text', namespaces=ns)[0]
+				font = textNode.attrib['font-family']
+				size = int(float(textNode.attrib['font-size']))
+				text = textNode.text
+				textItem = QGraphicsSimpleTextItem(text, group)
+				textItem.setFont( QFont(font, size) )
+				nodePoint = QPointF(float(textNode.attrib['x']), float(textNode.attrib['y']))
+				textItem.setPos( nodePoint - textItem.boundingRect().center() + QPointF(0.0,-4.0))
 
 			elif xmlNode.attrib['class'] == 'edge':
 				pass

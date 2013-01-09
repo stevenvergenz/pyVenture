@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Tue Jan  8 13:22:31 2013
+# Created: Wed Jan  9 09:55:15 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,6 +26,7 @@ class Ui_MainWindow(object):
         self.mainSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.mainSplitter.setObjectName(_fromUtf8("mainSplitter"))
         self.graphicsView = QtGui.QGraphicsView(self.mainSplitter)
+        self.graphicsView.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing)
         self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
         self.propertySplitter = QtGui.QSplitter(self.mainSplitter)
         self.propertySplitter.setFrameShape(QtGui.QFrame.NoFrame)
