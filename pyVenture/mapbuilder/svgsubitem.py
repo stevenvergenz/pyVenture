@@ -1,5 +1,5 @@
-from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsItemGroup, QPolygonF, QColor, QFont
-from PyQt4.QtCore import QString, QRectF, QPointF
+from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsRectItem, QPolygonF, QColor, QFont
+from PyQt4.QtCore import QString, QRectF, QPointF, Qt
 from lxml import etree as ET
 import pydot
 
@@ -11,9 +11,10 @@ class SvgSubItem(QGraphicsPolygonItem):
 	def __init__(self, world):
 
 		QGraphicsPolygonItem.__init__(self)
-		self.generateItemsFromWorld(world)
 		
-	def generateItemsFromWorld(self, world):
+		#############################
+		### Build graph
+		#############################
 
 		graph = pydot.Dot()
 		graph.set_node_defaults(color = 'red', fontcolor = 'red', label = '\<orphan\>')
@@ -45,7 +46,15 @@ class SvgSubItem(QGraphicsPolygonItem):
 					if finalEvent is not None:
 						graph.add_edge( finalEvent )
 	
+		################################
+		### Generate SVG from graph
+		################################
+
 		ps = graph.create_svg(prog='neato')
+
+		#########################################
+		### Build graphics items from SVG
+		#########################################
 
 		# build xml tree
 		ns = {'svg': 'http://www.w3.org/2000/svg'}
@@ -75,7 +84,9 @@ class SvgSubItem(QGraphicsPolygonItem):
 		# build each graph node
 		for xmlNode in rootNode.xpath('./svg:g', namespaces=ns):
 
-			group = QGraphicsItemGroup(self)
+			group = QGraphicsRectItem(self)
+			group.setPen( Qt.transparent )
+			group.setBrush( Qt.transparent )
 
 			if xmlNode.attrib['class'] == 'node':
 				
@@ -98,8 +109,12 @@ class SvgSubItem(QGraphicsPolygonItem):
 				if QColor.isValidColor(penColor):
 					textItem.setDefaultTextColor( QColor(penColor) )
 
+				group.setRect( ellipseItem.boundingRect() )
+				group.setFlags( QGraphicsRectItem.ItemIsSelectable )
+
 			elif xmlNode.attrib['class'] == 'edge':
 				pass
+
 
     	#<g id="node1" class="node">
     	#  <title>Armory 1</title>
@@ -107,6 +122,3 @@ class SvgSubItem(QGraphicsPolygonItem):
     	#  <text text-anchor="middle" x="38.4983" y="-77.6313" font-family="Times,serif" font-size="14.00">Armory</text>
 		#</g>
 
-		# generate sample item
-		#node = QtGui.QGraphicsEllipseItem( 38.4983, -81.3313, 38.4949, 18.0, self)
-		#cx="38.4983" cy="-81.3313" rx="38.4949" ry="18"
