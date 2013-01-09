@@ -40,6 +40,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		self.graphicsScene = QtGui.QGraphicsScene( self.graphicsView )
 		self.graphicsView.setScene( self.graphicsScene )
+		self.graphicsView.setInteractive(True)
 
 		# connect toolbar buttons
 		self.toolBar.addAction(self.actionNew)
@@ -248,8 +249,6 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		svgItem = SvgSubItem(self.world)
 		self.graphicsScene.addItem(svgItem)
 
-		self.graphicsView.setInteractive(True)
-		#self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
 
 	def updatePropertyTable(self):
 
