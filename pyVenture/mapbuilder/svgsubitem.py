@@ -88,7 +88,12 @@ class SvgSubItem(QGraphicsPolygonItem):
 			group.setPen( Qt.transparent )
 			group.setBrush( Qt.transparent )
 
+
 			if xmlNode.attrib['class'] == 'node':
+
+				# find the area object
+				name = xmlNode.xpath('./svg:title', namespaces=ns)[0].text
+				group.setData( 0, QString(world.areas[world.areaLookup[name]].id) )
 				
 				# get the ellipse info
 				ellipseNode = xmlNode.xpath('./svg:ellipse', namespaces=ns)[0]

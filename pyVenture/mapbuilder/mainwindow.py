@@ -40,6 +40,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		self.graphicsScene = QtGui.QGraphicsScene( self.graphicsView )
 		self.graphicsView.setScene( self.graphicsScene )
+		self.graphicsScene.selectionChanged.connect( self.updateMapSelection )
 		#self.graphicsView.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
 
 		# connect toolbar buttons
@@ -237,17 +238,24 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 						eventItem.ventureObject = event
 						actionItem.addChild(eventItem)
 
-		#		featureItem.sortChildren(0, Qt.AscendingOrder)
-		#	areaItem.sortChildren(0, Qt.AscendingOrder)
-		#self.hierarchyTree.sortItems(0, Qt.AscendingOrder)
-
-
 
 	def updateMapWidget(self):
 
 		self.graphicsScene.clear()
 		svgItem = SvgSubItem(self.world)
 		self.graphicsScene.addItem(svgItem)
+
+	def updateMapSelection(self):
+
+		try:
+			graphicsItem = self.graphicsScene.selectedItems()[0]
+		except IndexError:
+			return
+
+		area = graphicsItem.data(0).toString()
+		treeItem = self.hierarchyTree.findItems( area, Qt.MatchExactly )[0]
+		self.hierarchyTree.setCurrentItem(treeItem)
+		
 
 	def updatePropertyTable(self):
 
