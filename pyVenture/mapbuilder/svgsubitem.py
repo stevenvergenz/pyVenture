@@ -1,4 +1,4 @@
-from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsSimpleTextItem, QGraphicsItemGroup, QPolygonF, QColor, QFont
+from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsItemGroup, QPolygonF, QColor, QFont
 from PyQt4.QtCore import QString, QRectF, QPointF
 from lxml import etree as ET
 
@@ -55,13 +55,13 @@ class SvgSubItem(QGraphicsPolygonItem):
 
 				# get the text info
 				textNode = xmlNode.xpath('./svg:text', namespaces=ns)[0]
-				font = textNode.attrib['font-family']
-				size = int(float(textNode.attrib['font-size']))
 				text = textNode.text
-				textItem = QGraphicsSimpleTextItem(text, group)
-				textItem.setFont( QFont(font, size) )
+				textItem = QGraphicsTextItem(text, group)
+				penColor = textNode.attrib.get('fill', 'black')
 				nodePoint = QPointF(float(textNode.attrib['x']), float(textNode.attrib['y']))
 				textItem.setPos( nodePoint - textItem.boundingRect().center() + QPointF(0.0,-4.0))
+				if QColor.isValidColor(penColor):
+					textItem.setDefaultTextColor( QColor(penColor) )
 
 			elif xmlNode.attrib['class'] == 'edge':
 				pass
