@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Wed Jan  9 13:54:33 2013
+# Created: Fri Jan 11 15:55:15 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         self.verticalLayout = QtGui.QVBoxLayout(self.frame)
         self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.hierarchyTree = QtGui.QTreeWidget(self.frame)
+        self.hierarchyTree = QtGui.QTreeView(self.frame)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -49,9 +49,7 @@ class Ui_MainWindow(object):
         self.hierarchyTree.setSizePolicy(sizePolicy)
         self.hierarchyTree.setAlternatingRowColors(True)
         self.hierarchyTree.setAnimated(True)
-        self.hierarchyTree.setColumnCount(2)
         self.hierarchyTree.setObjectName(_fromUtf8("hierarchyTree"))
-        self.hierarchyTree.header().setDefaultSectionSize(200)
         self.verticalLayout.addWidget(self.hierarchyTree)
         self.frame_2 = QtGui.QFrame(self.frame)
         self.frame_2.setFrameShape(QtGui.QFrame.NoFrame)
@@ -83,7 +81,7 @@ class Ui_MainWindow(object):
         self.pushMoveDown.setObjectName(_fromUtf8("pushMoveDown"))
         self.horizontalLayout.addWidget(self.pushMoveDown)
         self.verticalLayout.addWidget(self.frame_2)
-        self.propertyTable = QtGui.QTableWidget(self.propertySplitter)
+        self.propertyTable = QtGui.QTableView(self.propertySplitter)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -91,19 +89,7 @@ class Ui_MainWindow(object):
         self.propertyTable.setSizePolicy(sizePolicy)
         self.propertyTable.setAlternatingRowColors(True)
         self.propertyTable.setHorizontalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
-        self.propertyTable.setGridStyle(QtCore.Qt.DotLine)
-        self.propertyTable.setWordWrap(False)
-        self.propertyTable.setCornerButtonEnabled(False)
         self.propertyTable.setObjectName(_fromUtf8("propertyTable"))
-        self.propertyTable.setColumnCount(2)
-        self.propertyTable.setRowCount(0)
-        item = QtGui.QTableWidgetItem()
-        self.propertyTable.setHorizontalHeaderItem(0, item)
-        item = QtGui.QTableWidgetItem()
-        self.propertyTable.setHorizontalHeaderItem(1, item)
-        self.propertyTable.horizontalHeader().setDefaultSectionSize(120)
-        self.propertyTable.horizontalHeader().setStretchLastSection(True)
-        self.propertyTable.verticalHeader().setVisible(False)
         self.horizontalLayout_2.addWidget(self.mainSplitter)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
@@ -169,8 +155,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QtGui.QApplication.translate("MainWindow", "pyVenture Map Builder", None, QtGui.QApplication.UnicodeUTF8))
-        self.hierarchyTree.headerItem().setText(0, QtGui.QApplication.translate("MainWindow", "Name", None, QtGui.QApplication.UnicodeUTF8))
-        self.hierarchyTree.headerItem().setText(1, QtGui.QApplication.translate("MainWindow", "Type", None, QtGui.QApplication.UnicodeUTF8))
         self.pushNewSibling.setToolTip(QtGui.QApplication.translate("MainWindow", "New Sibling", None, QtGui.QApplication.UnicodeUTF8))
         self.pushNewSibling.setStatusTip(QtGui.QApplication.translate("MainWindow", "Add a new area to the world.", None, QtGui.QApplication.UnicodeUTF8))
         self.pushNewChild.setToolTip(QtGui.QApplication.translate("MainWindow", "New Child", None, QtGui.QApplication.UnicodeUTF8))
@@ -181,10 +165,6 @@ class Ui_MainWindow(object):
         self.pushMoveUp.setStatusTip(QtGui.QApplication.translate("MainWindow", "Move the selected item up relative to its siblings.", None, QtGui.QApplication.UnicodeUTF8))
         self.pushMoveDown.setToolTip(QtGui.QApplication.translate("MainWindow", "Move Down", None, QtGui.QApplication.UnicodeUTF8))
         self.pushMoveDown.setStatusTip(QtGui.QApplication.translate("MainWindow", "Move the selected item down relative to its siblings.", None, QtGui.QApplication.UnicodeUTF8))
-        item = self.propertyTable.horizontalHeaderItem(0)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Property", None, QtGui.QApplication.UnicodeUTF8))
-        item = self.propertyTable.horizontalHeaderItem(1)
-        item.setText(QtGui.QApplication.translate("MainWindow", "Value", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_File.setTitle(QtGui.QApplication.translate("MainWindow", "&File", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Player.setTitle(QtGui.QApplication.translate("MainWindow", "&Player", None, QtGui.QApplication.UnicodeUTF8))
         self.menu_Help.setTitle(QtGui.QApplication.translate("MainWindow", "&Help", None, QtGui.QApplication.UnicodeUTF8))
