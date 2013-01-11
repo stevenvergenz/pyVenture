@@ -16,6 +16,7 @@ def main(world):
 		print
 		print
 		print player.currentArea.entranceText
+		print
 		print 'The area contains:'
 		for feature in player.currentArea.features:
 			print feature.description
@@ -28,10 +29,20 @@ def main(world):
 				print '{0}. {1}'.format(len(actionlist)+1, action.description)
 				actionlist.append(action)
 				
-		choice = raw_input('> ')
+		try:
+			choice = ''
+			while choice == '':
+				choice = raw_input('> ')
+		except KeyboardInterrupt, EOFError:
+			return GameStatus.Quit
+
 		print
 		
+<<<<<<< HEAD
 		if choice == 'quit' or choice == "q":
+=======
+		if choice.lower() in ['quit', 'q']:
+>>>>>>> refs/heads/master
 			return GameStatus.Quit
 		else:
 			try:
