@@ -94,8 +94,12 @@ class SvgSubItem(QGraphicsPolygonItem):
 
 				# find the area object
 				name = xmlNode.xpath('./svg:title', namespaces=ns)[0].text
-				group.setData( 0, QString(world.areas[world.areaLookup[name]].id) )
-				
+				try:
+					group.setData( 0, QString(world.areas[world.areaLookup[name]].id) )
+					IsOrphan = False
+				except (KeyError, IndexError):
+					IsOrphan = True
+
 				# get the ellipse info
 				ellipseNode = xmlNode.xpath('./svg:ellipse', namespaces=ns)[0]
 				elProps = { k: float(ellipseNode.attrib[k]) for k in ['cx', 'cy', 'rx', 'ry']}
@@ -116,7 +120,8 @@ class SvgSubItem(QGraphicsPolygonItem):
 					textItem.setDefaultTextColor( QColor(penColor) )
 
 				group.setRect( ellipseItem.boundingRect() )
-				group.setFlags( QGraphicsRectItem.ItemIsSelectable )
+				if not IsOrphan:
+					group.setFlags( QGraphicsRectItem.ItemIsSelectable )
 
 			elif xmlNode.attrib['class'] == 'edge':
 
