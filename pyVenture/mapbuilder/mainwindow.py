@@ -1,6 +1,7 @@
 from window import Ui_MainWindow
 from PyQt4 import QtGui, QtCore, QtSvg
 from PyQt4.QtCore import Qt
+from svgsubitem import SvgSubItem
 
 from common import types
 from common import events
@@ -37,8 +38,10 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.world = None
 		self.oldWorld = None
 
-		self.graphicsScene = QtGui.QGraphicsScene()
+		self.graphicsScene = QtGui.QGraphicsScene( self.graphicsView )
 		self.graphicsView.setScene( self.graphicsScene )
+		self.graphicsScene.selectionChanged.connect( self.updateMapSelection )
+		#self.graphicsView.setDragMode( QtGui.QGraphicsView.RubberBandDrag )
 
 		# connect toolbar buttons
 		self.toolBar.addAction(self.actionNew)
@@ -54,7 +57,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.actionNew.triggered.connect( self.newFileDialog )
 
 		# connect Player menu items
-
+		self.actionSetSpawnpoint.triggered.connect( self.setSpawnPoint )
 
 		# connect Tools menu items
 		self.actionView_JSON.triggered.connect( self.viewJSON )
@@ -97,6 +100,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			elif result == QtGui.QMessageBox.Cancel:
 				return
 
+		self.filename = ''
 		self.oldWorld = types.World()
 		self.world = types.World()
 		self.hierarchyTree.clear()
@@ -191,7 +195,19 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		self.jsonViewer.setText( json.dumps(self.world.serialize(), indent=4) )
 		self.jsonViewer.show()
-	
+
+	def setSpawnPoint(self):
+
+		try:
+			item = self.hierarchyTree.selectedItems()[0].ventureObject
+		except IndexError:
+			return
+
+		if item is not None and isinstance(item, types.Area):
+			self.world.player.currentArea = item
+			self.updateMapWidget()
+			QtGui.QMessageBox.information(self, 'Spawn updated', 'The player spawn point is now at {0}'.format(item.id) )
+
 
 	########################################################
 	### Object browser handling
@@ -222,59 +238,24 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 						eventItem.ventureObject = event
 						actionItem.addChild(eventItem)
 
-		#		featureItem.sortChildren(0, Qt.AscendingOrder)
-		#	areaItem.sortChildren(0, Qt.AscendingOrder)
-		#self.hierarchyTree.sortItems(0, Qt.AscendingOrder)
-
-
 
 	def updateMapWidget(self):
 
-		graph = pydot.Dot()
-		graph.set_node_defaults(color = 'red', fontcolor = 'red', label = '\<orphan\>')
-		graph.set('overlap', 'prism')
-		
-		# build adjacency graph from world
-		for area in self.world.areas:
-		
-			# create node for each room
-			node = pydot.Node(area.id)
-			node.set( 'label', area.name )
-			if area.id == self.world.player.currentArea:
-				node.set( 'color', 'blue' )
-				node.set( 'fontcolor', 'blue' )
-			else:
-				node.set( 'color', 'black' )
-				node.set( 'fontcolor', 'black' )
-
-			graph.add_node(node)
-
-			# link to adjacent rooms
-			finalEvent = None
-			for feature in area.features:
-				for action in feature.actions:
-					for event in action.events:
-						if type(event) == events.PlayerMoveEvent:
-							finalEvent = pydot.Edge( src=area.id, dst=event.properties['destination'] )
-							break
-
-					if finalEvent is not None:
-						graph.add_edge( finalEvent )
-	
-			
-		ps = graph.create_svg(prog='neato')
-		psBytes = QtCore.QByteArray(ps)
-		renderer = QtSvg.QSvgRenderer(psBytes)
-		svgItem = QtSvg.QGraphicsSvgItem()
-		svgItem.setSharedRenderer(renderer)
-		self.graphicsScene = QtGui.QGraphicsScene()
+		self.graphicsScene.clear()
+		svgItem = SvgSubItem(self.world)
 		self.graphicsScene.addItem(svgItem)
 
-		self.graphicsView.setScene(self.graphicsScene)
-		self.graphicsView.setInteractive(True)
-		self.graphicsView.setDragMode(QtGui.QGraphicsView.ScrollHandDrag)
-	
+	def updateMapSelection(self):
 
+		try:
+			graphicsItem = self.graphicsScene.selectedItems()[0]
+		except IndexError:
+			return
+
+		area = graphicsItem.data(0).toString()
+		treeItem = self.hierarchyTree.findItems( area, Qt.MatchExactly )[0]
+		self.hierarchyTree.setCurrentItem(treeItem)
+		
 
 	def updatePropertyTable(self):
 
@@ -336,6 +317,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			for name, value in treeItem.ventureObject.properties.items():
 				self.propertyTable.setItem( i,0, QtGui.QTableWidgetItem(name) )
 				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
+				i += 1
 
 
 		# set all cells in col 0 read-only
@@ -493,7 +475,13 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			if result == QtGui.QMessageBox.No: return
 
 		if isinstance(item.ventureObject, types.Area):
-			del(self.world.areas[item.ventureObject.id])
+			index = self.world.areaLookup[item.ventureObject.id]
+			del self.world.areaLookup[item.ventureObject.id]
+			self.world.areas.remove( index )
+			for areaId, areaIndex in self.world.areaLookup.items():
+				if areaIndex > index:
+					self.world.areaLookup[areaId] = areaIndex-1
+
 			index = self.hierarchyTree.indexFromItem( item ).row()
 			self.hierarchyTree.takeTopLevelItem( index )
 		
@@ -514,11 +502,108 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 	def moveItemUp(self):
 
-		pass
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			return
+
+		parent = item.parent()
+		if parent is None:
+			oldIndex = self.hierarchyTree.indexOfTopLevelItem( item )
+		else:
+			oldIndex = parent.indexOfChild(item)
+
+		if oldIndex == 0:
+			return
+
+		if parent is None:
+			item = self.hierarchyTree.takeTopLevelItem( oldIndex )
+			self.hierarchyTree.insertTopLevelItem( oldIndex-1, item )
+		else:
+			item = parent.takeChild( oldIndex )
+			parent.insertChild( oldIndex-1, item )
+
+		if isinstance(item.ventureObject, types.Area):
+			temp = self.world.areas[oldIndex]
+			del self.world.areas[oldIndex]
+			self.world.areas.insert(oldIndex-1, temp)
+			for key,val in self.world.areaLookup.items():
+				if val == oldIndex-1:
+					self.world.areaLookup[key] = val+1
+			self.world.areaLookup[item.ventureObject.id] = oldIndex-1
+
+		elif isinstance(item.ventureObject, types.Feature):
+			temp = item.ventureObject
+			del temp.parentArea.features[oldIndex]
+			temp.parentArea.features.insert(oldIndex-1, temp)
+
+		elif isinstance(item.ventureObject, types.Action):
+			temp = item.ventureObject
+			del temp.parentFeature.actions[oldIndex]
+			temp.parentFeature.actions.insert(oldIndex-1, temp)
+
+		elif isinstance(item.ventureObject, events.Event):
+			temp = item.ventureObject
+			del temp.parentAction.events[oldIndex]
+			temp.parentAction.events.insert(oldIndex-1, temp)
+
+		self.hierarchyTree.setCurrentItem(item)
+
 
 	def moveItemDown(self):
 
-		pass
+		# get selection
+		try:
+			item = self.hierarchyTree.selectedItems()[0]
+		except IndexError:
+			return
+
+		# get index, make sure moveDown is a valid operation
+		parent = item.parent()
+		if parent is None:
+			oldIndex = self.hierarchyTree.indexOfTopLevelItem( item )
+			if oldIndex == self.hierarchyTree.topLevelItemCount()-1:
+				return
+		else:
+			oldIndex = parent.indexOfChild(item)
+			if oldIndex == parent.childCount()-1:
+				return
+
+		# swap tree item for one below it
+		if parent is None:
+			item = self.hierarchyTree.takeTopLevelItem( oldIndex )
+			self.hierarchyTree.insertTopLevelItem( oldIndex+1, item )
+		else:
+			item = parent.takeChild( oldIndex )
+			parent.insertChild( oldIndex+1, item )
+
+		# swap game object item for the one below it
+		if isinstance(item.ventureObject, types.Area):
+			temp = self.world.areas[oldIndex]
+			del self.world.areas[oldIndex]
+			self.world.areas.insert(oldIndex+1, temp)
+			for key,val in self.world.areaLookup.items():
+				if val == oldIndex+1:
+					self.world.areaLookup[key] = val-1
+			self.world.areaLookup[item.ventureObject.id] = oldIndex+1
+
+		elif isinstance(item.ventureObject, types.Feature):
+			temp = item.ventureObject
+			del temp.parentArea.features[oldIndex]
+			temp.parentArea.features.insert(oldIndex+1, temp)
+
+		elif isinstance(item.ventureObject, types.Action):
+			temp = item.ventureObject
+			del temp.parentFeature.actions[oldIndex]
+			temp.parentFeature.actions.insert(oldIndex+1, temp)
+
+		elif isinstance(item.ventureObject, events.Event):
+			temp = item.ventureObject
+			del temp.parentAction.events[oldIndex]
+			temp.parentAction.events.insert(oldIndex+1, temp)
+
+		# update the tree selection
+		self.hierarchyTree.setCurrentItem(item)
 
 
 	def editProperty(self, row, column):

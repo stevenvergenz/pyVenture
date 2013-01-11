@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'window.ui'
 #
-# Created: Fri Dec 21 08:58:27 2012
+# Created: Wed Jan  9 13:54:33 2013
 #      by: PyQt4 UI code generator 4.9.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -26,6 +26,7 @@ class Ui_MainWindow(object):
         self.mainSplitter.setOrientation(QtCore.Qt.Horizontal)
         self.mainSplitter.setObjectName(_fromUtf8("mainSplitter"))
         self.graphicsView = QtGui.QGraphicsView(self.mainSplitter)
+        self.graphicsView.setRenderHints(QtGui.QPainter.Antialiasing|QtGui.QPainter.TextAntialiasing)
         self.graphicsView.setObjectName(_fromUtf8("graphicsView"))
         self.propertySplitter = QtGui.QSplitter(self.mainSplitter)
         self.propertySplitter.setFrameShape(QtGui.QFrame.NoFrame)
@@ -134,8 +135,8 @@ class Ui_MainWindow(object):
         self.actionSave_As.setObjectName(_fromUtf8("actionSave_As"))
         self.actionE_xit = QtGui.QAction(MainWindow)
         self.actionE_xit.setObjectName(_fromUtf8("actionE_xit"))
-        self.actionSet_spawnpoint_here = QtGui.QAction(MainWindow)
-        self.actionSet_spawnpoint_here.setObjectName(_fromUtf8("actionSet_spawnpoint_here"))
+        self.actionSetSpawnpoint = QtGui.QAction(MainWindow)
+        self.actionSetSpawnpoint.setObjectName(_fromUtf8("actionSetSpawnpoint"))
         self.actionSet_location_here = QtGui.QAction(MainWindow)
         self.actionSet_location_here.setObjectName(_fromUtf8("actionSet_location_here"))
         self.actionManage_inventory = QtGui.QAction(MainWindow)
@@ -152,7 +153,7 @@ class Ui_MainWindow(object):
         self.menu_File.addAction(self.actionSave_As)
         self.menu_File.addSeparator()
         self.menu_File.addAction(self.actionE_xit)
-        self.menu_Player.addAction(self.actionSet_spawnpoint_here)
+        self.menu_Player.addAction(self.actionSetSpawnpoint)
         self.menu_Player.addAction(self.actionSet_location_here)
         self.menu_Player.addAction(self.actionManage_inventory)
         self.menu_Help.addAction(self.actionAbout_pyVenture)
@@ -195,7 +196,7 @@ class Ui_MainWindow(object):
         self.actionSave.setShortcut(QtGui.QApplication.translate("MainWindow", "Ctrl+S", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSave_As.setText(QtGui.QApplication.translate("MainWindow", "Save &As...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionE_xit.setText(QtGui.QApplication.translate("MainWindow", "E&xit", None, QtGui.QApplication.UnicodeUTF8))
-        self.actionSet_spawnpoint_here.setText(QtGui.QApplication.translate("MainWindow", "Set &spawnpoint here", None, QtGui.QApplication.UnicodeUTF8))
+        self.actionSetSpawnpoint.setText(QtGui.QApplication.translate("MainWindow", "Set &spawn point here", None, QtGui.QApplication.UnicodeUTF8))
         self.actionSet_location_here.setText(QtGui.QApplication.translate("MainWindow", "Set &location here", None, QtGui.QApplication.UnicodeUTF8))
         self.actionManage_inventory.setText(QtGui.QApplication.translate("MainWindow", "Manage &inventory...", None, QtGui.QApplication.UnicodeUTF8))
         self.actionAbout_pyVenture.setText(QtGui.QApplication.translate("MainWindow", "About &pyVenture...", None, QtGui.QApplication.UnicodeUTF8))

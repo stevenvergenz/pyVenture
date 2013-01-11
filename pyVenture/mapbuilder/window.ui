@@ -20,7 +20,11 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QGraphicsView" name="graphicsView"/>
+      <widget class="QGraphicsView" name="graphicsView">
+       <property name="renderHints">
+        <set>QPainter::Antialiasing|QPainter::TextAntialiasing</set>
+       </property>
+      </widget>
       <widget class="QSplitter" name="propertySplitter">
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
@@ -243,7 +247,7 @@
     <property name="title">
      <string>&amp;Player</string>
     </property>
-    <addaction name="actionSet_spawnpoint_here"/>
+    <addaction name="actionSetSpawnpoint"/>
     <addaction name="actionSet_location_here"/>
     <addaction name="actionManage_inventory"/>
    </widget>
@@ -308,9 +312,9 @@
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="actionSet_spawnpoint_here">
+  <action name="actionSetSpawnpoint">
    <property name="text">
-    <string>Set &amp;spawnpoint here</string>
+    <string>Set &amp;spawn point here</string>
    </property>
   </action>
   <action name="actionSet_location_here">
