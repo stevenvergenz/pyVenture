@@ -55,7 +55,7 @@ def main():
 	try:
 		raw_input('Press Enter to exit...')
 	except EOFError:
-		pass
+		print
 
 	#if sys.argv[1] == 'play':
 	#	launchGame()

@@ -253,8 +253,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			return
 
 		area = graphicsItem.data(0).toString()
-		treeItem = self.hierarchyTree.findItems( area, Qt.MatchExactly )[0]
-		self.hierarchyTree.setCurrentItem(treeItem)
+		try:
+			treeItem = self.hierarchyTree.findItems( area, Qt.MatchExactly )[0]
+			self.hierarchyTree.setCurrentItem(treeItem)
+		except IndexError:
+			pass
 		
 
 	def updatePropertyTable(self):
@@ -267,6 +270,9 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		treeItem = self.hierarchyTree.selectedItems()[0]
 		self.propertyTable.ventureObject = treeItem.ventureObject
 		self.propertyTable.removeCellWidget(0,1)
+
+		# prevent property updates
+		self.propertyTable.cellChanged.disconnect( self.editProperty )
 
 		if treeItem.text(1) == 'Area':
 
@@ -319,6 +325,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 				self.propertyTable.setItem( i,1, QtGui.QTableWidgetItem(value) )
 				i += 1
 
+		self.propertyTable.cellChanged.connect( self.editProperty )
 
 		# set all cells in col 0 read-only
 		for index in range(0, self.propertyTable.rowCount()):
@@ -619,11 +626,11 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			ventureObject.properties[str(key)] = value
 
 		if isinstance(ventureObject, types.Area) and key == 'name':
-			if not ventureObject.id.startswith(ventureObject.name):
-				self.world.updateArea(ventureObject)
-				self.hierarchyTree.selectedItems()[0].setText(0, ventureObject.id)
-				self.propertyTable.item(0,1).setText( ventureObject.id )
-				self.updateMapWidget()
+			#if not ventureObject.id.startswith(ventureObject.name):
+			self.world.updateArea(ventureObject)
+			self.hierarchyTree.selectedItems()[0].setText(0, ventureObject.id)
+			self.propertyTable.item(0,1).setText( ventureObject.id )
+			self.updateMapWidget()
 		
 		elif isinstance(ventureObject, types.Feature) and key == 'name':
 			self.hierarchyTree.selectedItems()[0].setText(0, value)
