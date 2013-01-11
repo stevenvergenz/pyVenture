@@ -33,7 +33,7 @@ def main(world):
 			choice = ''
 			while choice == '':
 				choice = raw_input('> ')
-		except KeyboardInterrupt, EOFError:
+		except (KeyboardInterrupt, EOFError):
 			return GameStatus.Quit
 
 		print

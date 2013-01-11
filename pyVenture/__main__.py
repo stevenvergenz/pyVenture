@@ -52,7 +52,10 @@ def main():
 	while status not in [GameStatus.Quit, GameStatus.Error]:
 		status = launchGame(world)
 
-	raw_input('Press Enter to exit...')
+	try:
+		raw_input('Press Enter to exit...')
+	except EOFError:
+		pass
 
 	#if sys.argv[1] == 'play':
 	#	launchGame()
