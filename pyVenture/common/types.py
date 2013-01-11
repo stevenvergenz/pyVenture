@@ -86,13 +86,12 @@ class World(Serial):
 			self.areaLookup[area.id] = len(self.areas)
 			self.areas.append(area)
 
-	def updateArea(self, area):
+	def updateAreaIndex(self):
 
-		oldId = area.id
-		area.id = self._generateId(area)
-		self.areaLookup[area.id] = self.areaLookup[oldId]
-		del self.areaLookup[oldId]
-		
+		self.areaLookup = {}
+		for i,area in enumerate(self.areas):
+			self.areaLookup[area.id] = i
+
 	def _generateId(self, area):
 
 		i = 1

@@ -409,6 +409,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			newTreeItem.ventureObject = newVentureObject
 			newTreeItem.setText(0, newVentureObject.id)
 			newTreeItem.setText(1, 'Area')
+			self.updateMapWidget()
 
 		elif isinstance(item.ventureObject, types.Feature):
 			newVentureObject = types.Feature('unknown object', 'A vague and undefined object')
@@ -465,7 +466,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			item.ventureObject.events.append(newVentureObject)
 			newTreeItem = QtGui.QTreeWidgetItem(item, [newVentureObject.type, 'Event'])
 			newTreeItem.ventureObject = newVentureObject
-			
+
+		self.hierarchyTree.setCurrentItem(newTreeItem)
 		self.hierarchyTree.expandItem(item)
 
 	def deleteItem(self):
@@ -589,10 +591,7 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 			temp = self.world.areas[oldIndex]
 			del self.world.areas[oldIndex]
 			self.world.areas.insert(oldIndex+1, temp)
-			for key,val in self.world.areaLookup.items():
-				if val == oldIndex+1:
-					self.world.areaLookup[key] = val-1
-			self.world.areaLookup[item.ventureObject.id] = oldIndex+1
+			self.world.updateAreaIndex()
 
 		elif isinstance(item.ventureObject, types.Feature):
 			temp = item.ventureObject
@@ -627,7 +626,8 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 
 		if isinstance(ventureObject, types.Area) and key == 'name':
 			#if not ventureObject.id.startswith(ventureObject.name):
-			self.world.updateArea(ventureObject)
+			ventureObject.id = self.world._generateId(ventureObject)
+			self.world.updateAreaIndex()
 			self.hierarchyTree.selectedItems()[0].setText(0, ventureObject.id)
 			self.propertyTable.item(0,1).setText( ventureObject.id )
 			self.updateMapWidget()
@@ -665,4 +665,5 @@ class MainWindow(QtGui.QMainWindow, Ui_MainWindow):
 		self.hierarchyTree.selectedItems()[0].setText(0, newEvent.type)
 		
 		self.updatePropertyTable()
+		self.updateMapWidget()
 
