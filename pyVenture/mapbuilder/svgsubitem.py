@@ -1,7 +1,8 @@
-from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsRectItem, QPolygonF, QColor, QFont
+from PyQt4.QtGui import QGraphicsPolygonItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsRectItem, QGraphicsPathItem
+from PyQt4.QtGui import QPolygonF, QColor, QFont, QPainterPath
 from PyQt4.QtCore import QString, QRectF, QPointF, Qt
 from lxml import etree as ET
-import pydot
+import pydot, re
 
 from common import types
 from common import events
@@ -118,12 +119,50 @@ class SvgSubItem(QGraphicsPolygonItem):
 				group.setFlags( QGraphicsRectItem.ItemIsSelectable )
 
 			elif xmlNode.attrib['class'] == 'edge':
-				pass
 
+ 				# parse the line portion of the arrow
+ 				line = xmlNode.xpath('./svg:path', namespaces=ns)[0]
+				path = QPainterPath()
 
-    	#<g id="node1" class="node">
-    	#  <title>Armory 1</title>
-    	#  <ellipse fill="none" stroke="black" cx="38.4983" cy="-81.3313" rx="38.4949" ry="18"/>
-    	#  <text text-anchor="middle" x="38.4983" y="-77.6313" font-family="Times,serif" font-size="14.00">Armory</text>
-		#</g>
+				# pull info from xml file
+				linePath = line.attrib['d']
+				lineColor = line.attrib['stroke']
+					
+				# parse path coords
+				points = re.findall( '(-?\d+\.\d+),(-?\d+\.\d+)', linePath )
+				if len(points) != 4:
+					continue
+				startPoint = QPointF( float(points[0][0]), float(points[0][1]) )
+				path.moveTo(startPoint)
+				curvePoints = []
+				for pointCoord in points[1:]:
+					curvePoints.append( QPointF(float(pointCoord[0]), float(pointCoord[1])) )
+				path.cubicTo( curvePoints[0], curvePoints[1], curvePoints[2] )
 
+				# construct path item
+				pathItem = QGraphicsPathItem(path, group)
+				if QColor.isValidColor(lineColor):
+					pathItem.setPen( QColor(lineColor) )
+
+				polyNode = xmlNode.xpath('./svg:polygon', namespaces=ns)[0]
+
+				# pull info from xml file
+				pointStr = polyNode.xpath('./@points', namespaces=ns)[0]
+				penColor = QString(polyNode.xpath('./@stroke', namespaces=ns)[0])
+				fillColor = QString(polyNode.xpath('./@fill', namespaces=ns)[0])
+
+				# parse polygon path
+				path = QPolygonF()
+				for pair in pointStr.split(' '):
+					dims = pair.split(',')
+					point = QPointF( float(dims[0]), float(dims[1]) )
+					path.append(point)
+
+				# construct polygon item
+				polygonItem = QGraphicsPolygonItem(path, group)
+				if QColor.isValidColor(penColor):
+					polygonItem.setPen( QColor(penColor) )
+				if QColor.isValidColor(fillColor):
+					polygonItem.setBrush( QColor(fillColor) )
+
+				group.setRect( pathItem.boundingRect() and polygonItem.boundingRect() )
